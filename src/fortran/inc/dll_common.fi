@@ -1,0 +1,25 @@
+C**********************************************************************
+C*
+C* MODULE:
+C* /DLL_COMMON.FI/ Cleaned version for gfortran build
+C*
+C* MODULE DETAIL:
+C*    This include file contains the parameters originally passed to the
+C*    Intel Fortran DLL. The Cray POINTER and Unicode string variables
+C*    have been removed for gfortran compatibility.
+C*
+C**********************************************************************
+C
+C Define the parameters (VB callback pointers removed)
+C
+      CHARACTER*1    OVRWRITE     ! overwrite output file (y/n)
+      LOGICAL        INPUT_PASSED_TO_DLL ! are parameters passed to DLL
+      LOGICAL        SCREEN_MSGS_TO_VB_WINDOW ! write to VB window
+      CHARACTER*80   DLLERR       ! dll error message
+C
+      COMMON  /DLL_COMMON_CHAR/ OVRWRITE,  DLLERR
+C
+      COMMON  /DLL_COMMON_LOG/  INPUT_PASSED_TO_DLL,
+     1                          SCREEN_MSGS_TO_VB_WINDOW
+C*!
+C**********************************************************************
