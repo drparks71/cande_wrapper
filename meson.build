@@ -1,9 +1,6 @@
 project('cande-wrapper', 'c', 'fortran',
   version: '0.1.0',
   meson_version: '>=1.1.0',
-  default_options: [
-    'fortran_std=legacy',
-  ],
 )
 
 py = import('python').find_installation(pure: false)

@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import os
-import shutil
 from pathlib import Path
 from typing import Optional
 
@@ -11,7 +10,6 @@ from typing import Optional
 def _find_gfortran_dirs() -> list[str]:
     """Find directories containing gfortran runtime DLLs on Windows."""
     import shutil
-    import subprocess
 
     dirs = []
     # Check if gfortran is on PATH and find its bin directory

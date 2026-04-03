@@ -8,12 +8,11 @@ version = "0.1.0"
 description = "Python wrapper for the CANDE FEA culvert analysis engine"
 requires-python = ">=3.10"
 dependencies = [
-    "ipykernel>=7.2.0",
     "numpy>=1.26",
 ]
 
 [project.optional-dependencies]
-dev = ["pytest", "build", "jupyter"]
+dev = ["pytest", "build", "jupyter", "ipykernel"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -21,6 +20,3 @@ markers = [
     "integration: requires the compiled Fortran extension",
 ]
 addopts = "-m 'not integration'"
-
-[tool.meson-python.args]
-setup = ["-Dfortran_std=legacy"]
