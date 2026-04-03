@@ -132,7 +132,7 @@ The `meson.build` file lists Engine source files explicitly. If you see unresolv
 The package was imported but the compiled extension (`_cande.pyd` / `_cande.so`) was not found. Rebuild with:
 
 ```bash
-pip install -e . --no-build-isolation
+pip install -e . --no-build-isolation (try without this flag first; it's only needed if the isolated build can't find numpy)
 ```
 
 ### Large memory usage
