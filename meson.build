@@ -20,7 +20,11 @@ incdir_f2py = run_command(py,
   check: true,
 ).stdout().strip()
 
-inc_np = include_directories(incdir_numpy, incdir_f2py)
+# Use compile args directly because the venv may be inside the source tree,
+# which causes include_directories() to fail in Meson >= 1.4
+inc_np = declare_dependency(
+  compile_args: ['-I' + incdir_numpy, '-I' + incdir_f2py],
+)
 
 # ---------------------------------------------------------
 # Source directories (relative paths from project root)
@@ -109,7 +113,7 @@ entry_source = files('src' / 'fortran' / 'run_cande.f')
 cande_engine_lib = static_library('cande_engine',
   stub_sources + engine_sources + io_sources,
   include_directories: [stub_inc, cande_inc],
-  fortran_args: ['-w', '-fallow-argument-mismatch', '-std=legacy', '-fdec', '-freal-4-real-8'],
+  fortran_args: ['-w', '-fallow-argument-mismatch', '-std=legacy', '-fdec', '-freal-4-real-8', '-fno-automatic'],
 )
 
 # ---------------------------------------------------------
@@ -128,12 +132,12 @@ f2py_runtime_c = incdir_f2py / 'fortranobject.c'
 # ---------------------------------------------------------
 py.extension_module('_cande',
   [entry_source, f2py_wrapper_c, f2py_wrapper_f, f2py_runtime_c],
-  include_directories: [stub_inc, cande_inc, inc_np],
+  include_directories: [stub_inc, cande_inc],
   link_with: cande_engine_lib,
-  dependencies: py_dep,
+  dependencies: [py_dep, inc_np],
   subdir: 'cande_wrapper',
   install: true,
-  fortran_args: ['-w', '-fallow-argument-mismatch', '-std=legacy', '-fdec', '-freal-4-real-8'],
+  fortran_args: ['-w', '-fallow-argument-mismatch', '-std=legacy', '-fdec', '-freal-4-real-8', '-fno-automatic'],
 )
 
 # ---------------------------------------------------------
