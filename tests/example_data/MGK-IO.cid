@@ -1,0 +1,62 @@
+                      A-1!!ANALYS   3 0  2 Bandwidth minimizer example, house on stilts                                   
+                   A-2.L3!!BASIC         2
+                B-1.Basic!!    1    2      1000         0        10        10         0
+                B-2.Basic!!    0
+                   A-2.L3!!BASIC         2
+                B-1.Basic!!    1    2      1000         0        10        10         0
+                B-2.Basic!!    0
+                   C-1.L3!!PREP    Non optimum node numbers                                        
+                   C-2.L3!!    1    4    0    3    1   11    8    5    1    0    3
+                   C-3.L3!!    1    0         0         0                         
+                   C-3.L3!!    2    0        10         0                         
+                   C-3.L3!!    6    0         0       2.5                         
+                   C-3.L3!!    7    0        10       2.5                         
+                   C-3.L3!!    8    0         0         5                         
+                   C-3.L3!!    5    0         5         5                         
+                   C-3.L3!!    9    0        10         5                         
+                   C-3.L3!!   10    0         0       7.5                         
+                   C-3.L3!!    4    0         5       7.5                         
+                   C-3.L3!!   11    0        10       7.5                         
+                   C-3.L3!!L   3    0         5        10                         
+                   C-4.L3!!    1    6    1    0    0    1                         
+                   C-4.L3!!    2    8    6    0    0    1                         
+                   C-4.L3!!    3    7    2    0    0    2                         
+                   C-4.L3!!    4    9    7    0    0    2                         
+                   C-4.L3!!    5    8    5    4   10    1                         
+                   C-4.L3!!    6    5    9   11    4    1                         
+                   C-4.L3!!    7   10    4    3    0    1                         
+                   C-4.L3!!L   8    4   11    3    0    1                         
+                   C-5.L3!!    1    1         0    1         0                                             
+                   C-5.L3!!    2    1         0    1         0                                             
+                   C-5.L3!!L   3    0         0    0       -10                                             
+                      D-1!!L   1    1          house stiffness       
+            D-2.Isotropic!!       100          
+STOP
+
+                      A-1!!DESIGN   1 1  160. Corr. Steel Pipe                                           30
+                  A-2.L12!!STEEL     
+                B-1.Steel!!  29000000       0.3     33000                   0         0    0    1    0
+         B-2.Steel.D.LRFD!!         1         1         1         1         1
+        B-3.Steel.AD.LRFD!!         1         1         1       0.9         5
+                   C-1.L1!!        61       120   10    0
+                   C-2.L1!!         3      1000      0.25
+                   C-2.L1!!         6      1000      0.25
+                   C-2.L1!!         9      1000      0.25
+                   C-2.L1!!        12      1000      0.25
+                   C-2.L1!!        15      1000      0.25
+                   C-2.L1!!        18      1000      0.25
+                   C-2.L1!!        21      1000      0.25
+                   C-2.L1!!        24      1000      0.25
+                   C-2.L1!!        27      1000      0.25
+                   C-2.L1!!        30      1000      0.25
+                   C-3.L1!!    1    1      2.05 Load increment #1                      
+                   C-3.L1!!    2    2      2.05Factor for load step #2                 
+                   C-3.L1!!    3    3      2.05Factor for load step #3                 
+                   C-3.L1!!    4    4      2.05Factor for load step #4                 
+                   C-3.L1!!    5    5      2.05Factor for load step #5                 
+                   C-3.L1!!    6    6      2.05Factor for load step #6                 
+                   C-3.L1!!    7    7      2.05Factor for load step #7                 
+                   C-3.L1!!    8    8      2.05Factor for load step #8                 
+                   C-3.L1!!    9    9      2.05Factor for load step #9                 
+                   C-3.L1!!   10   10      2.05Factor for load step #10                
+STOP

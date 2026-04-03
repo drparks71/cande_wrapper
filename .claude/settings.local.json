@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -m pytest tests/test_engine.py tests/test_result.py -v)",
+      "Bash(pip install:*)",
+      "Bash(PYTHONPATH=src python -m pytest tests/test_engine.py tests/test_result.py -v)"
+    ]
+  }
+}

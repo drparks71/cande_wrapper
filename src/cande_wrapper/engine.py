@@ -56,12 +56,26 @@ class CandeEngine:
         # Import the f2py-compiled extension
         try:
             from cande_wrapper._cande import run_cande
-        except ImportError as e:
-            raise ImportError(
-                "CANDE Fortran extension not found. "
-                "Build it with: pip install -e . "
-                "(requires gfortran and numpy)"
-            ) from e
+        except ImportError:
+            # On Windows, gfortran runtime DLLs may not be on PATH.
+            # Try adding common gfortran bin directories.
+            if os.name == "nt":
+                for gfortran_dir in _find_gfortran_dirs():
+                    os.add_dll_directory(gfortran_dir)
+                try:
+                    from cande_wrapper._cande import run_cande
+                except ImportError as e:
+                    raise ImportError(
+                        "CANDE Fortran extension DLL load failed. "
+                        "Ensure gfortran runtime DLLs (libgfortran-5.dll) "
+                        "are on PATH or install via conda."
+                    ) from e
+            else:
+                raise ImportError(
+                    "CANDE Fortran extension not found. "
+                    "Build it with: pip install -e . "
+                    "(requires gfortran and numpy)"
+                )
 
         # CANDE reads/writes files relative to CWD, so we chdir
         original_dir = os.getcwd()
