@@ -1,0 +1,24 @@
+# JetBrains IDEs (IntelliJ IDEA, PyCharm, etc.)
+.idea/
+*.iml
+*.iws
+*.ipr
+.idea_modules/
+
+# OS specific
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# Editor backup and temp files
+*~
+*.swp
+*.swo
+*.bak
+*.tmp
+/CANDE Source/*
