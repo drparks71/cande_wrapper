@@ -8,6 +8,33 @@ from pathlib import Path
 from typing import Optional
 
 
+def _find_gfortran_dirs() -> list[str]:
+    """Find directories containing gfortran runtime DLLs on Windows."""
+    import shutil
+    import subprocess
+
+    dirs = []
+    # Check if gfortran is on PATH and find its bin directory
+    gfortran = shutil.which("gfortran")
+    if gfortran:
+        dirs.append(str(Path(gfortran).parent))
+    # Common locations
+    for candidate in [
+        r"C:\Strawberry\c\bin",
+        r"C:\msys64\mingw64\bin",
+        r"C:\mingw64\bin",
+    ]:
+        if Path(candidate).is_dir():
+            dirs.append(candidate)
+    # Conda environment
+    conda_prefix = os.environ.get("CONDA_PREFIX")
+    if conda_prefix:
+        lib_dir = Path(conda_prefix) / "Library" / "bin"
+        if lib_dir.is_dir():
+            dirs.append(str(lib_dir))
+    return dirs
+
+
 class CandeEngine:
     """Wrapper around the CANDE FEA engine compiled via f2py.
 

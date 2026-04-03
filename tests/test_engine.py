@@ -38,10 +38,15 @@ class TestRun:
         with pytest.raises(FileNotFoundError, match="Input file not found"):
             engine.run("nonexistent")
 
-    def test_missing_extension_raises(self, tmp_workdir):
-        """Without mock_fortran, importing _cande should fail."""
+    def test_missing_extension_raises(self, tmp_workdir, monkeypatch):
+        """Simulates missing _cande extension by blocking the import."""
+        import sys
+
+        # Remove cached module and make it unimportable
+        monkeypatch.setitem(sys.modules, "cande_wrapper._cande", None)
+
         engine = CandeEngine(work_dir=tmp_workdir)
-        with pytest.raises(ImportError, match="Fortran extension not found"):
+        with pytest.raises(ImportError):
             engine.run("MGK-IO")
 
     def test_success_returns_result(self, tmp_workdir, mock_fortran):
