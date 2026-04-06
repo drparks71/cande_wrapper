@@ -1,0 +1,51 @@
+stages:
+  - build
+  - publish
+
+variables:
+  # Target Python 3.10 through 3.14 specifically
+  CIBW_BUILD: "cp310-* cp311-* cp312-* cp313-* cp314-*"
+  # Skip 32-bit architectures and PyPy
+  CIBW_SKIP: "*-win32 *_i686 pp*"
+
+# 1. Build the Source Distribution (sdist)
+build_sdist:
+  stage: build
+  image: python:3.10
+  script:
+    - pip install build
+    - python -m build --sdist --outdir wheelhouse
+  artifacts:
+    paths:
+      - wheelhouse/*.tar.gz
+
+# 2. Build Linux Wheels
+build_linux_wheels:
+  stage: build
+  image: python:3.10
+  services:
+    - docker:dind  # Assumes your runner uses the Docker executor
+  variables:
+    DOCKER_DRIVER: overlay2
+    # Install gfortran inside the manylinux container before building
+    CIBW_BEFORE_ALL_LINUX: "yum install -y gcc-gfortran || dnf install -y gcc-gfortran"
+  script:
+    - pip install cibuildwheel
+    - cibuildwheel --output-dir wheelhouse
+  artifacts:
+    paths:
+      - wheelhouse/*.whl
+
+# 3. Publish to PyPI
+publish_pypi:
+  stage: publish
+  image: python:3.10
+  needs:
+    - build_sdist
+    - build_linux_wheels
+  rules:
+    # This ensures publishing ONLY happens when you push a git tag (e.g., v0.1.0)
+    - if: $CI_COMMIT_TAG
+  script:
+    - pip install twine
+    - twine upload wheelhouse/*
