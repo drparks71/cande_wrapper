@@ -5,5 +5,5 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "cande-wrapper"
 version = "0.0.2"
-description = "Placeholder for the CANDE FEA culvert analysis engine"
+description = "Placeholder for the CANDE FEA culvert analysis engine wrapper"
 requires-python = ">=3.10"
