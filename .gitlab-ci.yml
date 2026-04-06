@@ -13,7 +13,7 @@ build_dummy:
     paths:
       - dist/*
 
-# 2. Publish to PyPI
+# 2. Publish
 publish_pypi:
   stage: publish
   image: python:3.10
