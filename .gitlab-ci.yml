@@ -2,54 +2,25 @@ stages:
   - build
   - publish
 
-variables:
-  # Target Python 3.10 through 3.14 specifically
-  CIBW_BUILD: "cp310-* cp311-* cp312-* cp313-* cp314-*"
-  # Skip 32-bit architectures and PyPy
-  CIBW_SKIP: "*-win32 *_i686 pp*"
-
-# 1. Build the Source Distribution (sdist)
-build_sdist:
+# 1. Build a pure Python dummy wheel and sdist
+build_dummy:
   stage: build
   image: python:3.10
   script:
     - pip install build
-    - python -m build --sdist --outdir wheelhouse
+    - python -m build --sdist --wheel --outdir dist/
   artifacts:
     paths:
-      - wheelhouse/*.tar.gz
+      - dist/*
 
-# 2. Build Linux Wheels
-build_linux_wheels:
-  stage: build
-  image: python:3.10
-  services:
-    - docker:dind
-  variables:
-    # Explicitly tell the Docker CLI where to find the DinD service
-    DOCKER_HOST: tcp://docker:2375
-    DOCKER_TLS_CERTDIR: ""
-    CIBW_BEFORE_ALL_LINUX: "yum install -y gcc-gfortran || dnf install -y gcc-gfortran"
-  script:
-    # 1. Install the Docker CLI inside the Python container
-    - apt-get update && apt-get install -y docker.io
-    # 2. Proceed with the build
-    - pip install cibuildwheel
-    - cibuildwheel --output-dir wheelhouse
-  artifacts:
-    paths:
-      - wheelhouse/*.whl
-
-# 3. Publish to PyPI
+# 2. Publish to PyPI
 publish_pypi:
   stage: publish
   image: python:3.10
   needs:
-    - build_sdist
-    - build_linux_wheels
+    - build_dummy
   rules:
-    # This ensures publishing ONLY happens when you push a git tag (e.g., v0.1.0)
     - if: $CI_COMMIT_TAG
   script:
     - pip install twine
-    - twine upload wheelhouse/*
+    - twine upload dist/*
