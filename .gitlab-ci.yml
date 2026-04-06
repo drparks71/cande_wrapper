@@ -24,12 +24,16 @@ build_linux_wheels:
   stage: build
   image: python:3.10
   services:
-    - docker:dind  # Assumes your runner uses the Docker executor
+    - docker:dind
   variables:
-    DOCKER_DRIVER: overlay2
-    # Install gfortran inside the manylinux container before building
+    # Explicitly tell the Docker CLI where to find the DinD service
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
     CIBW_BEFORE_ALL_LINUX: "yum install -y gcc-gfortran || dnf install -y gcc-gfortran"
   script:
+    # 1. Install the Docker CLI inside the Python container
+    - apt-get update && apt-get install -y docker.io
+    # 2. Proceed with the build
     - pip install cibuildwheel
     - cibuildwheel --output-dir wheelhouse
   artifacts:
