@@ -44,11 +44,6 @@ build_linux_cp313:
   variables:
     PYTHON_TAG: "cp313-cp313"
 
-build_linux_cp314:
-  extends: .build_linux_wheel
-  variables:
-    PYTHON_TAG: "cp314-cp314"
-
 # Build Windows wheels using a matrix
 build_windows:
   stage: build
@@ -58,10 +53,9 @@ build_windows:
     matrix:
       - PYTHON_VERSION: ["3.10", "3.11", "3.12", "3.13", "3.14"]
   script:
-    # GitLab expands $PYTHON_VERSION (CI var); $$ escapes PS-only vars from GitLab expansion
+    # Locate Python by install path (e.g. C:\Python310\python.exe)
     - $$PY_SHORT = "$PYTHON_VERSION" -replace '\.', ''
     - $$PYTHON = 'C:\Python' + $$PY_SHORT + '\python.exe'
-    - if (-not (Test-Path $$PYTHON)) { $$PYTHON = (Get-Command python).Source }
     - & $$PYTHON -m pip install "numpy>=1.26" meson meson-python ninja build delvewheel
     - & $$PYTHON -m build --wheel --outdir wheelhouse/
     - $$wheel = Get-ChildItem wheelhouse\*.whl | Select-Object -First 1
@@ -95,7 +89,6 @@ publish_pypi:
     - build_linux_cp311
     - build_linux_cp312
     - build_linux_cp313
-    - build_linux_cp314
     - build_windows
     - build_sdist
   script:
