@@ -2,6 +2,12 @@ stages:
   - build
   - publish
 
+# Only run pipelines on tags — skip branch pushes
+workflow:
+  rules:
+    - if: $CI_COMMIT_TAG
+    - if: $CI_PIPELINE_SOURCE == "web"
+
 # Build Linux wheels directly in manylinux containers
 .build_linux_wheel:
   stage: build
@@ -79,8 +85,6 @@ publish_pypi:
     - build_linux_cp313
     - build_windows
     - build_sdist
-  rules:
-    - if: $CI_COMMIT_TAG
   script:
     - pip install twine
     - twine upload dist/*
