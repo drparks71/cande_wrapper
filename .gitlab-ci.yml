@@ -44,6 +44,11 @@ build_linux_cp313:
   variables:
     PYTHON_TAG: "cp313-cp313"
 
+build_linux_cp314:
+  extends: .build_linux_wheel
+  variables:
+    PYTHON_TAG: "cp314-cp314"
+
 # Build Windows wheels using a matrix
 build_windows:
   stage: build
@@ -88,6 +93,7 @@ publish_pypi:
     - build_linux_cp311
     - build_linux_cp312
     - build_linux_cp313
+    - build_linux_cp314
     - build_windows
     - build_sdist
   script:
