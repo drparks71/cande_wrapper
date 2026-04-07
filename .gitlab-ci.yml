@@ -2,23 +2,61 @@ stages:
   - build
   - publish
 
-# 1. Build a pure Python dummy wheel and sdist
-build_dummy:
+# Build wheels for Linux using cibuildwheel in Docker
+build_linux:
+  stage: build
+  image: python:3.10
+  services:
+    - docker:dind
+  variables:
+    CIBW_PLATFORM: linux
+    CIBW_BUILD: "cp310-manylinux_x86_64 cp311-manylinux_x86_64 cp312-manylinux_x86_64 cp313-manylinux_x86_64"
+    CIBW_BEFORE_ALL_LINUX: "yum install -y gcc-gfortran || (apt-get update && apt-get install -y gfortran)"
+    CIBW_BEFORE_BUILD: "pip install numpy>=1.26 meson meson-python ninja"
+  script:
+    - pip install cibuildwheel
+    - cibuildwheel --output-dir dist/
+  artifacts:
+    paths:
+      - dist/*.whl
+
+# Build Windows wheel locally and upload as artifact
+# (requires a Windows runner with gfortran — tag yours accordingly)
+build_windows:
+  stage: build
+  tags:
+    - windows
+  variables:
+    CIBW_PLATFORM: windows
+    CIBW_BUILD: "cp310-win_amd64 cp311-win_amd64 cp312-win_amd64 cp313-win_amd64"
+    CIBW_BEFORE_BUILD: "pip install numpy>=1.26 meson meson-python ninja"
+    CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: "delvewheel repair -w {dest_dir} {wheel}"
+  script:
+    - pip install cibuildwheel delvewheel
+    - cibuildwheel --output-dir dist/
+  artifacts:
+    paths:
+      - dist/*.whl
+  allow_failure: true  # Remove once you have a Windows runner
+
+# Build source distribution
+build_sdist:
   stage: build
   image: python:3.10
   script:
-    - pip install build
-    - python -m build --sdist --wheel --outdir dist/
+    - pip install build meson-python meson ninja numpy
+    - python -m build --sdist --outdir dist/
   artifacts:
     paths:
-      - dist/*
+      - dist/*.tar.gz
 
-# Publish to PyPI
+# Publish to PyPI on tagged releases
 publish_pypi:
   stage: publish
   image: python:3.10
   needs:
-    - build_dummy
+    - build_linux
+    - build_sdist
   rules:
     - if: $CI_COMMIT_TAG
   script:

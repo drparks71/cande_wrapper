@@ -1,9 +1,50 @@
 [build-system]
-requires = ["setuptools>=61.0"]
-build-backend = "setuptools.build_meta"
+requires = ["meson-python>=0.15", "numpy>=1.26"]
+build-backend = "mesonpy"
 
 [project]
 name = "cande-wrapper"
-version = "0.0.3"
-description = "Placeholder for the CANDE FEA culvert analysis engine wrapper"
+version = "0.1.0"
+description = "Python wrapper for the CANDE FEA culvert analysis engine"
+license = "MIT"
 requires-python = ">=3.10"
+authors = [
+    { name = "Dane Parks" },
+]
+readme = "README.md"
+keywords = ["cande", "culvert", "fea", "finite-element", "fortran"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Fortran",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering",
+]
+dependencies = [
+    "numpy>=1.26",
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "build", "jupyter", "ipykernel"]
+
+[project.urls]
+Repository = "https://daneparks.com/Dane/cande-wrapper"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "integration: requires the compiled Fortran extension",
+]
+addopts = "-m 'not integration'"
+
+[tool.cibuildwheel]
+build = "cp310-* cp311-* cp312-* cp313-*"
+skip = "*-musllinux_* *-win32 *-manylinux_i686"
+
+[tool.cibuildwheel.windows]
+before-build = "pip install numpy>=1.26 meson meson-python ninja"
+
+[tool.cibuildwheel.linux]
+before-all = "yum install -y gcc-gfortran || apt-get update && apt-get install -y gfortran"
+before-build = "pip install numpy>=1.26 meson meson-python ninja"

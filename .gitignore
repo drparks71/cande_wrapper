@@ -7,11 +7,6 @@
 
 # OS specific
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
 Thumbs.db
 Desktop.ini
 
@@ -21,4 +16,50 @@ Desktop.ini
 *.swo
 *.bak
 *.tmp
-/CANDE Source/*
+
+# Build artifacts
+build/
+*.egg-info/
+dist/
+__pycache__/
+
+# Virtual environments
+.venv/
+
+# CANDE Source: exclude everything except Engine/, IO/, and Inc/ source files
+/CANDE Source/*.pdf
+/CANDE Source/*.docx
+/CANDE Source/CANDEEngine-2025 - MGK Source/AA-CANDE Output_Viewer/
+/CANDE Source/CANDEEngine-2025 - MGK Source/CANDE_DLL/
+/CANDE Source/CANDEEngine-2025 - MGK Source/Intel/
+/CANDE Source/CANDEEngine-2025 - MGK Source/Main/
+/CANDE Source/CANDEEngine-2025 - MGK Source/bin/
+/CANDE Source/CANDEEngine-2025 - MGK Source/*.dll
+/CANDE Source/CANDEEngine-2025 - MGK Source/*.sln
+/CANDE Source/CANDEEngine-2025 - MGK Source/*.suo
+/CANDE Source/CANDEEngine-2025 - MGK Source/*.scc
+/CANDE Source/CANDEEngine-2025 - MGK Source/*.txt
+/CANDE Source/CANDEEngine-2025 - MGK Source/*.xls
+# Inc build artifacts (keep .fi and .FI and .FD files only)
+/CANDE Source/CANDEEngine-2025 - MGK Source/Inc/Debug/
+/CANDE Source/CANDEEngine-2025 - MGK Source/Inc/Release/
+/CANDE Source/CANDEEngine-2025 - MGK Source/Inc/*.u2d
+/CANDE Source/CANDEEngine-2025 - MGK Source/Inc/*.vfproj
+/CANDE Source/CANDEEngine-2025 - MGK Source/Inc/*.mod
+/CANDE Source/CANDEEngine-2025 - MGK Source/Inc/*.for
+/CANDE Source/CANDEEngine-2025 - MGK Source/Inc/*.Orig
+# Engine/IO build artifacts and VS project files
+/CANDE Source/CANDEEngine-2025 - MGK Source/Engine/Debug/
+/CANDE Source/CANDEEngine-2025 - MGK Source/Engine/Release/
+/CANDE Source/CANDEEngine-2025 - MGK Source/Engine/*.u2d
+/CANDE Source/CANDEEngine-2025 - MGK Source/Engine/*.vfproj
+/CANDE Source/CANDEEngine-2025 - MGK Source/Engine/*.Orig
+/CANDE Source/CANDEEngine-2025 - MGK Source/Engine/*Previous*
+/CANDE Source/CANDEEngine-2025 - MGK Source/Engine/acande.f
+/CANDE Source/CANDEEngine-2025 - MGK Source/Engine/*Saved*
+/CANDE Source/CANDEEngine-2025 - MGK Source/IO/Debug/
+/CANDE Source/CANDEEngine-2025 - MGK Source/IO/Release/
+/CANDE Source/CANDEEngine-2025 - MGK Source/IO/*.u2d
+/CANDE Source/CANDEEngine-2025 - MGK Source/IO/*.vfproj
+# Inc: exclude non-source-code sidecar file
+/CANDE Source/CANDEEngine-2025 - MGK Source/Inc/sizepr
