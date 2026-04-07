@@ -56,10 +56,10 @@ build_windows:
     # Locate Python by install path (e.g. C:\Python310\python.exe)
     - $$PY_SHORT = "$PYTHON_VERSION" -replace '\.', ''
     - $$PYTHON = 'C:\Python' + $$PY_SHORT + '\python.exe'
-    - & $$PYTHON -m pip install "numpy>=1.26" meson meson-python ninja build delvewheel
-    - & $$PYTHON -m build --wheel --outdir wheelhouse/
+    - '& $$PYTHON -m pip install "numpy>=1.26" meson meson-python ninja build delvewheel'
+    - '& $$PYTHON -m build --wheel --outdir wheelhouse/'
     - $$wheel = Get-ChildItem wheelhouse\*.whl | Select-Object -First 1
-    - & $$PYTHON -m delvewheel repair $$wheel.FullName -w dist/
+    - '& $$PYTHON -m delvewheel repair $$wheel.FullName -w dist/'
   artifacts:
     paths:
       - dist/*.whl
