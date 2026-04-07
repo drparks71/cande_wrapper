@@ -44,16 +44,21 @@ build_linux_cp313:
   variables:
     PYTHON_TAG: "cp313-cp313"
 
-# Build Windows wheel on the local runner
+# Build Windows wheels using a matrix
 build_windows:
   stage: build
   tags:
     - windows
+  parallel:
+    matrix:
+      - PYTHON_VERSION: ["3.10", "3.11", "3.12", "3.13", "3.14"]
   script:
-    - pip install "numpy>=1.26" meson meson-python ninja build delvewheel
-    - python -m build --wheel --outdir wheelhouse/
+    # Use the Windows Python launcher 'py' to target the specific matrix version
+    - py -$PYTHON_VERSION -m pip install "numpy>=1.26" meson meson-python ninja build delvewheel
+    - py -$PYTHON_VERSION -m build --wheel --outdir wheelhouse/
     - $wheel = Get-ChildItem wheelhouse\*.whl | Select-Object -First 1
-    - delvewheel repair $wheel.FullName -w dist/
+    # Run delvewheel using the specific python version
+    - py -$PYTHON_VERSION -m delvewheel repair $wheel.FullName -w dist/
   artifacts:
     paths:
       - dist/*.whl
