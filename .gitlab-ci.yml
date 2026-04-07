@@ -51,7 +51,7 @@ build_windows:
     - windows
   parallel:
     matrix:
-      - PYTHON_VERSION: ["3.10", "3.11", "3.12", "3.13", "3.14"]
+      - PYTHON_VERSION: ["3.10", "3.11", "3.12", "3.13"]
   script:
     # Locate Python by install path (e.g. C:\Python310\python.exe)
     - $PY_SHORT = "$PYTHON_VERSION" -replace '\.', ''
