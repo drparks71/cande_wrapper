@@ -1,5 +1,5 @@
 project('cande-wrapper', 'c', 'fortran',
-  version: '0.1.13',
+  version: '0.1.14',
   meson_version: '>=1.1.0',
 )
 
