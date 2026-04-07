@@ -58,12 +58,14 @@ build_windows:
     matrix:
       - PYTHON_VERSION: ["3.10", "3.11", "3.12", "3.13", "3.14"]
   script:
-    # Use the Windows Python launcher 'py' to target the specific matrix version
-    - py -$PYTHON_VERSION -m pip install "numpy>=1.26" meson meson-python ninja build delvewheel
-    - py -$PYTHON_VERSION -m build --wheel --outdir wheelhouse/
+    # Locate Python by short version tag (e.g. "3.10" → "C:\Python310\python.exe")
+    - $PY_SHORT = $env:PYTHON_VERSION -replace '\.', ''
+    - $PYTHON = "C:\Python${PY_SHORT}\python.exe"
+    - if (-not (Test-Path $PYTHON)) { $PYTHON = (Get-Command python).Source }
+    - & $PYTHON -m pip install "numpy>=1.26" meson meson-python ninja build delvewheel
+    - & $PYTHON -m build --wheel --outdir wheelhouse/
     - $wheel = Get-ChildItem wheelhouse\*.whl | Select-Object -First 1
-    # Run delvewheel using the specific python version
-    - py -$PYTHON_VERSION -m delvewheel repair $wheel.FullName -w dist/
+    - & $PYTHON -m delvewheel repair $wheel.FullName -w dist/
   artifacts:
     paths:
       - dist/*.whl
