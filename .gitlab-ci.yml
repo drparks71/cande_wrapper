@@ -2,50 +2,62 @@ stages:
   - build
   - publish
 
-# Build wheels for Linux using cibuildwheel in Docker
-build_linux:
+# Build Linux wheels directly in manylinux containers
+.build_linux_wheel:
   stage: build
-  image: python:3.10
-  services:
-    - docker:dind
-  variables:
-    CIBW_PLATFORM: linux
-    CIBW_BUILD: "cp310-manylinux_x86_64 cp311-manylinux_x86_64 cp312-manylinux_x86_64 cp313-manylinux_x86_64"
-    CIBW_BEFORE_ALL_LINUX: "yum install -y gcc-gfortran || (apt-get update && apt-get install -y gfortran)"
-    CIBW_BEFORE_BUILD: "pip install numpy>=1.26 meson meson-python ninja"
+  image: quay.io/pypa/manylinux2014_x86_64
   script:
-    - pip install cibuildwheel
-    - cibuildwheel --output-dir dist/
+    - yum install -y gcc-gfortran
+    - PYTHON="/opt/python/${PYTHON_TAG}/bin/python"
+    - $PYTHON -m pip install "numpy>=1.26" meson meson-python ninja build
+    - $PYTHON -m build --wheel --outdir wheelhouse/
+    - auditwheel repair wheelhouse/*.whl -w dist/
   artifacts:
     paths:
       - dist/*.whl
 
-# Build Windows wheel locally and upload as artifact
-# (requires a Windows runner with gfortran — tag yours accordingly)
+build_linux_cp310:
+  extends: .build_linux_wheel
+  variables:
+    PYTHON_TAG: "cp310-cp310"
+
+build_linux_cp311:
+  extends: .build_linux_wheel
+  variables:
+    PYTHON_TAG: "cp311-cp311"
+
+build_linux_cp312:
+  extends: .build_linux_wheel
+  variables:
+    PYTHON_TAG: "cp312-cp312"
+
+build_linux_cp313:
+  extends: .build_linux_wheel
+  variables:
+    PYTHON_TAG: "cp313-cp313"
+
+# Build Windows wheel on the local runner
 build_windows:
   stage: build
   tags:
     - windows
-  variables:
-    CIBW_PLATFORM: windows
-    CIBW_BUILD: "cp310-win_amd64 cp311-win_amd64 cp312-win_amd64 cp313-win_amd64"
-    CIBW_BEFORE_BUILD: "pip install numpy>=1.26 meson meson-python ninja"
-    CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: "delvewheel repair -w {dest_dir} {wheel}"
   script:
-    - pip install cibuildwheel delvewheel
-    - cibuildwheel --output-dir dist/
+    - pip install "numpy>=1.26" meson meson-python ninja build delvewheel
+    - python -m build --wheel --outdir wheelhouse/
+    - $wheel = Get-ChildItem wheelhouse\*.whl | Select-Object -First 1
+    - delvewheel repair $wheel.FullName -w dist/
   artifacts:
     paths:
       - dist/*.whl
-  allow_failure: true  # Remove once you have a Windows runner
 
-# Build source distribution
+# Build source distribution (needs gfortran for meson setup)
 build_sdist:
   stage: build
-  image: python:3.10
+  image: quay.io/pypa/manylinux2014_x86_64
   script:
-    - pip install build meson-python meson ninja numpy
-    - python -m build --sdist --outdir dist/
+    - yum install -y gcc-gfortran
+    - /opt/python/cp310-cp310/bin/python -m pip install build meson-python meson ninja numpy
+    - /opt/python/cp310-cp310/bin/python -m build --sdist --outdir dist/
   artifacts:
     paths:
       - dist/*.tar.gz
@@ -55,7 +67,11 @@ publish_pypi:
   stage: publish
   image: python:3.10
   needs:
-    - build_linux
+    - build_linux_cp310
+    - build_linux_cp311
+    - build_linux_cp312
+    - build_linux_cp313
+    - build_windows
     - build_sdist
   rules:
     - if: $CI_COMMIT_TAG
