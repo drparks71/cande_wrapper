@@ -32,7 +32,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest", "build", "jupyter", "ipykernel"]
+dev = ["pytest", "pytest-cov", "build", "jupyter", "ipykernel"]
 
 [project.urls]
 Repository = "https://daneparks.com/Dane/cande-wrapper"
