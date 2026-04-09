@@ -28,3 +28,23 @@ __all__ = [
     "Vehicle",
     "WheelFootprint",
 ]
+
+
+def __getattr__(name):
+    """Lazy-load visualization functions so plotly is only required on use."""
+    _viz_names = {
+        "parse_beam_results",
+        "parse_mesh_geom",
+        "parse_mesh_results",
+        "plot_beam_forces",
+        "plot_beam_results",
+        "plot_deformed_mesh",
+        "plot_displacement",
+        "plot_load_history",
+        "plot_mesh",
+        "plot_soil_stress",
+    }
+    if name in _viz_names:
+        from cande_wrapper import visualization
+        return getattr(visualization, name)
+    raise AttributeError(f"module 'cande_wrapper' has no attribute {name!r}")
