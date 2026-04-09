@@ -155,11 +155,26 @@ class CandeResult:
         self.output_file = work_dir / f"{prefix}.out"
         self.log_file = work_dir / f"{prefix}.log"
         self.toc_file = work_dir / f"{prefix}.ctc"
+        self.mesh_geom_file = work_dir / f"{prefix}_MeshGeom.xml"
+        self.mesh_results_file = work_dir / f"{prefix}_MeshResults.xml"
+        self.beam_results_file = work_dir / f"{prefix}_BeamResults.xml"
 
     @property
     def output_text(self) -> str:
         """Read and return the full output file contents."""
         return self.output_file.read_text()
+
+    def plot_mesh(self, **kwargs):
+        """Plot the FEA mesh. Requires plotly (``pip install cande-wrapper[viz]``)."""
+        from cande_wrapper.visualization import parse_mesh_geom, plot_mesh
+        geom = parse_mesh_geom(self.mesh_geom_file)
+        return plot_mesh(geom, **kwargs)
+
+    def plot_beam_forces(self, **kwargs):
+        """Plot beam moment/thrust/shear. Requires plotly."""
+        from cande_wrapper.visualization import parse_beam_results, plot_beam_forces
+        beam = parse_beam_results(self.beam_results_file)
+        return plot_beam_forces(beam, **kwargs)
 
     def __repr__(self) -> str:
         return f"CandeResult(prefix={self.prefix!r}, output={self.output_file})"
