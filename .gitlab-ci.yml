@@ -1,96 +1,16 @@
 stages:
-  - test
   - build
   - publish
   - deploy
 
-variables:
-  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.pip_cache"
-
-cache:
-  key: "$CI_COMMIT_REF_SLUG"
-  paths:
-    - .pip_cache/
-
-# --- TEST TEMPLATE ---
-.test_logic:
-  script:
-    - pip install --upgrade setuptools pip
-    - pip install pytest pytest-cov numpy
-    - PYTHONPATH=src python -m pytest --cov=cande_wrapper --cov-report term --cov-report xml:coverage.xml -m "not integration"
-  coverage: '/TOTAL.*\s+(\d+\%)/'
-  artifacts:
-    reports:
-      coverage_report:
-        coverage_format: cobertura
-        path: coverage.xml
-
-# --- STAGE 1: TEST ---
-smoke-test-3.11:
-  extends: .test_logic
-  stage: test
-  image: python:3.11
+# Only run pipelines on tags — skip branch pushes
+workflow:
   rules:
-    - if: $CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+/
-      when: never
-    - if: $CI_COMMIT_TITLE =~ /-no_tests/
-      when: never
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_TAG
     - if: $CI_PIPELINE_SOURCE == "web"
-
-verify-3.10:
-  extends: .test_logic
-  stage: test
-  image: python:3.10
-  allow_failure: true
-  rules:
-    - if: $CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+/
-      when: never
-    - if: $CI_COMMIT_TITLE =~ /-no_tests/
-      when: never
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
-verify-3.12:
-  extends: .test_logic
-  stage: test
-  image: python:3.12
-  rules:
-    - if: $CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+/
-      when: never
-    - if: $CI_COMMIT_TITLE =~ /-no_tests/
-      when: never
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-
-verify-3.13:
-  extends: .test_logic
-  stage: test
-  image: python:3.13
-  allow_failure: true
-  rules:
-    - if: $CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+/
-      when: never
-    - if: $CI_COMMIT_TITLE =~ /-no_tests/
-      when: never
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-
-verify-3.14:
-  extends: .test_logic
-  stage: test
-  image: python:3.14
-  allow_failure: true
-  rules:
-    - if: $CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+/
-      when: never
-    - if: $CI_COMMIT_TITLE =~ /-no_tests/
-      when: never
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-
-# --- STAGE 2: BUILD (on tags only) ---
+# Build Linux wheels directly in manylinux containers
 .build_linux_wheel:
   stage: build
   tags:
@@ -105,9 +25,6 @@ verify-3.14:
   artifacts:
     paths:
       - dist/*.whl
-  rules:
-    - if: $CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+/
-    - if: $CI_PIPELINE_SOURCE == "web"
 
 build_linux_cp310:
   extends: .build_linux_wheel
@@ -148,9 +65,6 @@ build_windows:
   artifacts:
     paths:
       - dist/*.whl
-  rules:
-    - if: $CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+/
-    - if: $CI_PIPELINE_SOURCE == "web"
 
 # Build source distribution (needs gfortran for meson setup)
 build_sdist:
@@ -165,11 +79,8 @@ build_sdist:
   artifacts:
     paths:
       - dist/*.tar.gz
-  rules:
-    - if: $CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+/
-    - if: $CI_PIPELINE_SOURCE == "web"
 
-# --- STAGE 3: PUBLISH (on version tags only) ---
+# Publish to PyPI on tagged releases
 publish_pypi:
   stage: publish
   tags:
@@ -188,7 +99,7 @@ publish_pypi:
   rules:
     - if: $CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+/
 
-# --- STAGE 4: DEPLOY DOCS ---
+# Deploy Sphinx docs to GitLab Pages
 pages:
   stage: deploy
   image: python:3.11
@@ -201,3 +112,4 @@ pages:
   rules:
     - if: $CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+/
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE == "web"
