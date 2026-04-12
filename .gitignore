@@ -23,6 +23,9 @@ build/
 dist/
 __pycache__/
 
+# Sphinx doc build output
+_build/
+
 # Virtual environments
 .venv/
 

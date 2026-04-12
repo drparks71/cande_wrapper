@@ -2,6 +2,7 @@ stages:
   - test
   - build
   - publish
+  - deploy
 
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.pip_cache"
@@ -186,3 +187,17 @@ publish_pypi:
     - twine upload dist/*
   rules:
     - if: $CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+/
+
+# --- STAGE 4: DEPLOY DOCS ---
+pages:
+  stage: deploy
+  image: python:3.11
+  script:
+    - pip install -r docs/requirements.txt
+    - PYTHONPATH=src python -m sphinx docs public
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+/
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
