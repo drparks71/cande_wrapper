@@ -1,0 +1,796 @@
+MGK – January 2022
+1
+CANDE Tool Box Manual
+For Load Rating
+EXECUTIVE SUMMARY
+The CANDE Tool Box greatly enhances the user friendliness of the CANDE finite element program to
+compute load rating factors (RF) for existing culvert-soil systems for any truck or live load configuration.
+The CANDE Tool Box is a standalone computer program that offers the user several options to ease the
+pain of developing CANDE input files and computing rating factors. Currently there are five options,
+which are briefly described below and explained in much greater detail within this manual.
+1. Convert any Level-2 input file with half-mesh symmetry into an equivalent Level-3 file with full
+mesh topology. Useful for applying non-symmetric loading, alternate layering, and void zones.
+2. Modify any Level-3 input file to include a pavement layer over the soil surface and/or convert
+top soil layer to an elastic wearing course. Useful for Load Rating existing culverts to include
+the load-spreading benefits inherent in pavements and prevent failure of nonlinear soil models.
+3. Extend any Level-3 input file to include boundary conditions to simulate live loads moving over
+the mesh surface. Choose HL93 design or tandem truck or define any truck up to 10 axles.
+Useful for load rating existing culverts as well as designing new culverts.
+4. Permanently revise the node numbering of any Level-3 input file to minimize the bandwidth of
+mesh topology. Useful for circumventing the time-consuming need to employ CANDE’s builtin bandwidth minimizer that must be activated every time the input file is executed.
+5. Compute load-ratings factors RF from CANDE output files including the controlling RF values
+for each design criteria along with all supporting information printed out at end of the CANDE
+Output Report.
+This manual is organized in three major parts called Overview, Getting Started and Option Details. It is
+not necessary to read the entire manual before using CANDE Tool Box Program because the screen
+instructions and dialogue lead the user through executing each option and sub option. The user is
+encouraged to experiment with CANDE Tool Box by clicking on the executable icon contained in the
+same folder as this user manual.
+MGK – January 2022
+2
+CANDE Tool Box Manual
+For Load Rating
+Table of Contents
+EXECUTIVE SUMMARY .......................................................................................................................... 1
+OVERVIEW ................................................................................................................................................. 3
+Tool Box Purpose...................................................................................................................................... 3
+Tool Box Options (user choices). ............................................................................................................. 3
+Input File Requirements............................................................................................................................ 3
+File Names and Manipulations. ................................................................................................................ 4
+GETTING STARTED .................................................................................................................................. 5
+Initial Screen Views.................................................................................................................................. 5
+Intermediate Screen Views. ...................................................................................................................... 7
+Final Screen View..................................................................................................................................... 7
+OPTION DETAILS ...................................................................................................................................... 8
+OPTION 1: Level-2 half mesh to Level 3 full mesh................................................................................. 8
+OPTION 2: Add pavement and/or elastic wearing course........................................................................ 9
+OPTION 3: Add live loads on upper surface.......................................................................................... 10
+OPTION 4: Minimize Bandwidth........................................................................................................... 18
+OPTION 5: Calculate Load Rating Factor RF........................................................................................ 19
+REFERENCES ........................................................................................................................................... 23
+MGK – January 2022
+3
+OVERVIEW
+Tool Box Purpose.
+CANDE Tool Box (CTB) is a stand-alone computer program that operates on existing CANDE input and
+output files to generate new executable CANDE input files with enhanced capabilities or to compute load
+rating factors from previous CANDE solutions with live loads. All generated files and calculations are
+saved in the originating folder for easy access. Currently there are five options, which are briefly
+described below and subsequently explained in greater detail.
+Tool Box Options (user choices).
+1. Convert any Level-2 input file with half-mesh symmetry into an equivalent Level-3 file with full
+mesh topology. Useful for applying non-symmetric loading, alternate layering, and void zones.
+2. Modify any Level-3 input file to include a pavement layer over the soil surface and/or convert
+top soil layer to an elastic wearing course. The pavement sub-option is essential for the accurate
+Load Rating of existing culverts to include the full load-spreading benefits inherent in
+pavements. In contrast, the elastic wearing course is not intended to be s stiff pavement material
+but rather a “shake-down” of the backfill soil so that it behaves elastically during live-load
+cycling thereby avoiding non-convergence issues from non-linear soil models.
+3. Extend any Level-3 input file to include boundary conditions to simulate live loads moving over
+the mesh surface. Choose HL93 design or tandem truck or define any truck up to 10 axles. This
+option incorporates all the specialized AASHTO sub-options for longitudinal load spreading
+including the improved AAM-θ* method, the 3D Culvert Stiffness effect (3DSE) and the
+enhanced pavement footprint dimensions at the pavement-soil interface (Fox solution).
+4. Permanently revise the node numbering of any Level-3 input file to minimize the bandwidth of
+mesh topology. Useful for circumventing the time-consuming need to activate CANDE’s builtin bandwidth minimizer that must be activated every time the input file is executed.
+5. Compute load-ratings factors RF from CANDE output files that represent LRFR analysis and
+printout the final RF values with supporting information at the end of the CANDE output report.
+Input File Requirements.
+To exercise any of the options, the existing input file (CID) must have been successfully executed by the
+CANDE program, and the associated CANDE Output file (OUT) is resident in the same folder as the
+input file, which is the normal case unless the user rearranged the file locations. Taken together, the
+original input file and output files supply the basic information for creating new CID files with Options 1
+to 4. For Option 5, the output file provides the data source to compute load-rating RF values as well as the
+permanent file to record the results.
+MGK – January 2022
+4
+File Names and Manipulations.
+For purposes of discussion, assume that the originating CANDE input file is named “MyCulvert.cid”, and
+as always, the associated CANDE output file is automatically named “MyCulvert.out”. The table below
+shows the final result of applying any Tool Box option on an existing file, MyCulvert.cid. The last
+column shows the new file name generated by the Tool Box and stored in the original folder. The fourletter prefixes (Full-, Pave-, Live- and Bmin-) remind the user how this file has been modified from the
+originating file. For example, Full-MyCulvert.cid implies a full mesh input file has been created from the
+Level-2 half mesh file called MyCulvert.cid.
+Table 1. Overview of Tool Box options and file creation and modifications.
+Tool Box
+User Options
+Originating file
+identified by user
+via a browser
+Additional data
+Supplied by user
+via screen prompts
+New file generated by
+Tool Box
+(1)
+Create Level-3 Full
+mesh from Level-2
+Half mesh
+MyCulvert.cid
+(Any Level-2 File)
+None Full-MyCulvert.cid
+(Level-3 file)
+(2)
+Add Pavement layer or
+elastic wearing course
+to surface of soil
+MyCulvert.cid
+(Any Level-3 File)
+Pavement and/or
+wearing course data:
+Elastic properties.
+Pave-MyCulvert.cid
+(Level-3 file)
+(3)
+Add live loads over
+mesh surface
+MyCulvert.cid
+(Any Level-3 File)
+Vehicle data:
+Axles, loads,
+footprints, locations,
+adjustments, etc.
+Live-MyCulvert.cid
+(Level-3 file)
+(4)
+Minimize bandwidth
+by permanently
+renumbering nodes
+MyCulvert.cid
+(Any Level-3 File)
+None Bmin-MyCulvert.cid
+(Level-3 file)
+(5)
+Compute load-rating
+values and add to
+Output Report.
+MyCulvert.cid
+(Any Level-3 File)
+(Or Level-2 File)
+Load-step data:
+End of Construction,
+Start of Live load,
+End of Live load.
+MyCulvert.out
+(Same file as original
+output file with
+additional RF data)
+If desired, the Tool Box options may be applied in succession, i.e., one option after another. For example,
+to add a Pavement overlay to the newly generated full mesh file, select Option 2 and identify the
+originating file as Full-MyCulvert.cid. The final output from the Tool Box is called Pave-FullMyCulvert.cid. If all four options are selected in succession, then the final file is named, Bmin-LivePave-Full-MyCulvert.cid.
+Option 1 works on any Level 2 input file including all modifications with Level-2 Extended. For Options
+2, 3 and 4 the originating file may be any valid Level 3 cid file, perhaps developed manually or generated
+by third-party software packages such as NASTRAN or Cande-Cad-Pro. It is not necessary that the
+originating input file have line tags like those created by the CANDE GUI. If line tags do not exist on the
+originating file, they will not be inserted on the generated file. Conversely, if line tags are used in the
+originating file, they will also be inserted in the generated file.
+MGK – January 2022
+5
+Option 5 works on any output file. It does not create a new file, but rather, reads and processes the
+originating output file to compute the load rating factor RF and then prints the results at the end of the
+originating output file. Detailed explanations about option 5 as well as the other options are presented in
+the last section of this document.
+GETTING STARTED
+Initial Screen Views.
+After the CANDE Tool Box (CTB) executable program is downloaded and stored in the computer, the
+user need only double click the application icon to open the welcoming screen shown below. As shown,
+the first query requests the user to select the desired option by entering the number 1, 2, 3, 4, or 5.
+Entering a blank value is the signal to exit the program. The welcoming screen reappears after each option
+is completed so multiple options can be executed in one session.
+After any option number is entered, the screen shows the number and description of the selected option
+along with a request for the user to identify the associated CANDE CID file. The example shown below is
+the view screen when Option 1 is selected. Remember, the selected originating file must have been
+executed with CANDE before selecting it.
+MGK – January 2022
+6
+As indicated by the last sentence in the above screen, the user is required to press “Enter” on the key
+board to open a browser to the computer directory in order to select the desired CID file by double
+clicking. An example browser screen is shown below wherein Tutorial 7 is the chosen CID file.
+MGK – January 2022
+7
+Intermediate Screen Views.
+The above three screen views are similar for all options; however, the subsequent screen views are
+dependent on the selected option number. Options 1 and 4 require no additional user input, whereas
+Options 2, 3, and 5 require additional user input as directed by individual queries appearing on the screen.
+The third column in Table 2 indicates the type of data that is requested from the user; and the last section
+of this document provides greater detail on the data requested for each option along with default values.
+The screen views offer reasonable default options that the user may select to answer the queries.
+Final Screen View.
+The last screen view is similar for all options. First, a message to the user states that the option was
+successfully completed. If it had not been successful, the user would have been previously notified of the
+cause of the problem such as the Output file could not be found in the specified directory. Second, the
+user is informed of the name of the new CID file generated by options 1, 2, 3 or 4; or for option 5, the
+user is provided with a summary of the load rating calculations. An example of the final screen view is
+shown below for Option 1.
+As shown, the new CID file is named “Full-Tutorial-7”, and as indicated by the 2nd to last line, a
+description of the new CID file is written at the bottom of the input file for future reference. Indeed, all
+five options provide a written record of user selections and key calculations for future reference.
+MGK – January 2022
+8
+OPTION DETAILS
+OPTION 1: Level-2 half mesh to Level 3 full mesh.
+This option is applicable to any existing Level-2 input file including all Level-2-Extended modifications.
+To develop the new Level-3 input file with full mesh topology, information is taken from the originating
+Level-2 input file and also from the Level-2 output file. The output file contains generated data from the
+CANDE pre-processing subroutines including the complete set of nodal coordinates, element properties
+and boundary conditions that define the right half of the full Level-3 input file.
+The Option-1 algorithm generates the left-half side of the full mesh as a mirror image of the right-side
+mesh so that original number of nodes (Nhalf), elements (Mhalf), and boundary conditions (BChalf) become
+approximately doubled for the full mesh; i.e., Nfull ≈ 2 Nhalf, Mfull ≈ 2 Mhalf, and BCfull ≈ 2 BChalf. Note the
+relationships are “approximately” doubled due to the vertical centerline (x = 0) wherein nodes, interface
+elements and boundary conditions are not counted twice because the centerline does not have a separate
+mirror image.
+Specifically, the left-side mesh topology is generated from the right side by assigning each left-side node
+number nL equal to the corresponding right-side node nR plus the total number of half-mesh nodes, and
+then expressing the x and y coordinates as the mirror image as shown below.
+• nL = nR + Nhalf for nR = 1, 2, 3 … Nhalf
+• x(nL) = - x(nR)
+• y(nL) = y(nR)
+In a similar manner, the left side elements mL and boundary conditions bcL are generated from the
+corresponding right side numbering as shown below.
+• mL = mR + Mhalf for mR = 1, 2, 3 … Mhalf
+• bcL = bcR + BChalf for bcR = 1, 2, 3 … BChalf
+As already indicated, the above assignments are not performed whenever a node, interface element, or
+boundary condition is on the centerline (x=0). Special modifications are required for the original
+boundary conditions on the centerline, i.e., all lateral displacement constraints are removed and the
+magnitude of vertical forces are doubled to correctly represent the original half- symmetric conditions.
+Other special treatments include revising the beam element numbering for arch meshes so that the beam
+elements are in ascending order in traveling from the left footing to the right footing.
+The new Full-mesh input file as created by Option 1 is theoretically equivalent to the original Level-2
+input file so, without further changes, both solutions give essentially the same results. Slight differences
+in solutions are observed due to truncation of coordinate values recorded in the output report, round-off
+error in equation solving, and extrapolation approximations for beam-element nodes at the start and end
+of a pipe group.
+Of course, the whole purpose of creating the Full-mesh input file is to modify it in order to apply nonsymmetric loads and/or material zones to the new mesh. To this end, it is recommended to first execute
+MGK – January 2022
+9
+the Full-mesh input file and utilize the GUI Mesh Plot to visualize the nodes, elements and boundary
+conditions you wish to add or change.
+OPTION 2: Add pavement and/or elastic wearing course.
+This option is applicable to any existing Level-3 input file that has a continuous horizontal soil surface.
+Three sub-options are available: (1) Add pavement layer, (2) Change top layer to an elastic wearing
+course, and (3) Perform both operations. Each sub-option is explained below.
+1. Pavement. Add a pavement layer to the soil surface to take advantage of the real beneficial
+effects of pavements on load-rating analysis. Pavement is modeled as a plane-strain unit with
+elastic beam-column elements whose properties are defined by the user in response to screen
+prompts. Default values represent modest asphalt.
+• Pavement uniform thickness (default = 8.0 inches)
+• Young’s modulus (default = 200,000 psi)
+• Poisson ratio (default = 0.2)
+• Weight density (default = 140 lbs./ft3
+)
+The beam-column elements are placed over the highest layer of soil elements. Each beam element
+coincides with the top face of a surface soil element so that the beam-element length matches the
+soil element’s surface length. Since beam elements share the same nodes as the soil elements, no
+new nodes are added to the system, only beam elements. The pavement extends over the entire
+surface except for the soil elements at the extreme left and extreme right so that pavement does
+not receive any boundary support from the sides of the mesh. The pavement is formed with
+BASIC beam elements, which are assigned a group number one digit higher than the highest
+existing beam group number in the originating input file.
+Since pavements are much stiffer than the underlying soil stiffness, the CANDE solutions
+inherently spread-out the concentrated live loads on the pavement surface into soil layers thereby
+reducing load concentrations on the culvert. This beneficial effect, called in-plane load spreading,
+is the automatic effect of the CANDE 2D model with pavement elements.
+However, the benefits of pavements are not limited to just enhanced in-plane load spreading,
+there are equally important benefits for enhanced out-of-plane load spreading from pavements.
+To take full advantage of the pavement benefits, see Option 3 for the additional out-of-plane loadspreading benefit.
+2. Elastic Wearing Course. Change the top row of soil elements from a nonlinear model such as
+Duncan/Selig or Mohr/Coulomb to an elastic wearing course in order to avoid local failure due to
+concentrated live loads. Elastic wearing course properties are input by the user in response to
+screen prompts wherein the default values represent properties of an average soil.
+• Young’s modulus (default = 1,800 psi)
+• Poisson ratio (default = 0.33)
+If pavement is not included in the CANDE model, then sub-option 2 is generally required in order
+to avoid surface failure of nonlinear soil models from concentrated live loads. Engineers do not
+usually include pavements when designing new installations because construction vehicles
+MGK – January 2022
+10
+operate over soil surface prior to being paved. In such cases, the elastic wearing course is
+recommended. Since the elastic wearing course is intended to have essentially the same stiffness
+as the backfill soil model, there is no enhanced load-spreading benefit as occurs with the addition
+of a stiff pavement.
+3. Pavement plus Wearing Course. Add a pavement layer and change top soil layer to an elastic
+wearing course. This sub-option is useful when nonconvergence occurs due to sub-pavement soil
+failure that may occur if the pavement is too flexible.
+For any of the three sub-options, the new input file is uniquely named by adding the prefix “Pave-” to
+the name of the originating file, and a permanent record of the pavement details and/or wearing
+course is printed at the end of input file for future reference.
+OPTION 3: Add live loads on upper surface.
+This option is applicable to any existing Level-3 input file that has a continuous horizontal soil surface
+above the culvert wherein the soil surface may be paved or unpaved. Live loads are simulated by pointlike strip forces applied as boundary conditions at specific nodes and load steps. Moving loads are
+simulated by applying the strip force to a particular node at load-step k and then applying the force to the
+neighboring node at step k+1 while at the same time removing the strip force from the previous node.
+This process may be repeated to generate long travel paths and can be generalized for multiple axle loads
+to simulate truck travel.
+To make this option as general as possible, the user is required to input a variety of data; however, the
+default values provided by the program make this task relatively easy. The series of data entries and
+default values are presented below.
+1. Identify the pipe-group number of structure subject to live loading . (Default = 1)
+Often there is only 1 pipe group defined in the input file so that default value often applies.
+However if multiple pipe groups are defined in the input file, then user selects the group number
+of the current target structure (Option 3 can repeated for other target group numbers). Once the
+target structure is identified, the program determines the soil cover height and key node
+information relative to the target structure and prints the information on the screen for reference.
+2. Specify desired truck type – Enter 1, 2 or 3: (Default = 1)
+• Enter 1 for HL93 3-axle Design Truck (as defined by AASHTO)
+• Enter 2 for HL93 2-axle Tandem Truck (as defined by AASHTO)
+• Or, Enter 3 for User-defined truck (N-axles specified by user)
+If the user enters 1 or 2 no additional truck data is required, and the AASHTO defined truck
+properties are printed on the screen. If the user enters 3, the following additional data must be
+supplied:
+• Number of axles (from 1 to 10)
+• Weight of each axle in kips
+• Spacing between axles in feet
+MGK – January 2022
+11
+• Wheel footprint dimensions L0 x W0 in inches. (Default 10” x 20” all wheels).
+• Centerline spacing between wheels in feet for 2-wheel interaction (Default 6’ all axles)
+3. Answer yes or no to a series of questions on live-load modifications. If the answer is yes, then
+additional information must be provided, or accept the default value.
+3.1 Do you wish to remove previous live loads the input file?
+If yes, enter the beginning load step numbers of the old live loads.
+Or accept default.Default = load-step number following the last soil-construction load step.
+This is a quick way of clearing all previous live-loads in the originating CID file; otherwise,
+the old live loads will be applied in addition to the new live loads.
+3.2 Do you wish to add a lane-loading pressure on top surface?
+If yes, enter the lane pressure in psi units.
+Or accept default value.
+ Default = 0.444 psi per AASHTO.
+3.3 Do you wish to apply a dynamic impact factor to vehicle loads?
+If yes, choose sub-option for constant or variable impact factor:
+• Enter 1 for constant impact factor for all load locations.
+Next, enter the impact factor as a fraction of total load,
+Or, accept the accept the AASHTO default = 0.33(1 – H/8),
+where H is minimum cover height in feet.
+• Enter 2 for automatic calculation of variable impact factor based on AASHTO
+formula wherein H is now the variable vertical distance between surface load points
+and culvert periphery.
+3.4 Do you wish to invoke a multi-lane presence factor to increase loads?
+If yes, enter multi-lane presence factor as a fraction of total load.
+Or accept AASHTO default value, Default = 0.2
+Comment on load modifications. The load modifications described in items 3.1 to 3.4
+produce the AASHTO service load value that increases static truck weight. Modifications
+for longitudinal effects and LRFD load factors are discussed in items 4 and 5,
+respectively.
+4. Do you wish to account for longitudinal load-spreading? This includes sub-options for
+enhanced longitudinal load spreading due to pavement overlays and/or 3D stiffness effects.
+• Enter “yes” and go to line 4.1 to choose load spreading mehod (RSL or CLS).
+• Enter “blank” to skip to all longitudinal load spreading effects and go to line 5.
+MGK – January 2022
+12
+Ordinarly, longitudinal load spreading should be answered “yes” to avoid unrealistically high
+live-loads being transmitted to the culvert. That is, the plane-strain formulation implies that all
+live loads are infinitely long in the out-of-plane direction. Hence, it is necessary to make loading
+corrections for wheel loads with finite widths, using either RSL or CLS procedures.
+4.1 Select the method and procedures to account for longitudinal load-spreading for all
+out-of-plane effects. For RSL enter “1” or “-1” as noted below, or enter “2” for CLS. In all cases
+the CANDE Tool Box accounts for two-wheel interaction based on wheel spacing along an axle.
+• Enter “1” for the Reduced Surface Load (RSL) procedure using the improved AASHTO
+Ad Hoc load-spreading model called AAM-θ*. The soil pressure used to determine the
+reduction factor is evaluated at the culvert’s soil cover depth plus a small percentage of
+the culvert span in accordance with AASHTO Equation 3.6.1.2.6. Note that the
+additional “span term” is realtively new in the AASHTO specifications, and it implies
+the the reference depth for correcting the surface load is deeper than just the cover depth.
+This is the current AASHTO specification and serves as the default option. (Default = 1)
+• Enter “-1” (i.e., minus 1) for the same RSL procedure described above except the soil
+depth for evaluating soil pressure does not include the “span term”. This is the legacy
+AASHTO specification, which is still preferred by some conservative engineers.
+• Enter “2” for the Continuous Load Scaling (CLS) procedure that automtically spreads
+live-load soil stresses by individually increasing each element’s thicknes as a continuous
+function of soil depth using the Elasticity-Based-Method for load-spreading. CLS is
+considered the most accurate procedure to account for longitudial load-spreading and all
+out-plane effects. See latest vesion of CANDE Solution Methods and Formulations
+Manual, Chap. 8.1.3 for a complete understanding of this revolutionary new procedure.
+At this point the selection of RSL or CLS has been made, and the user is refered to either 4.2-
+RSL or 4.2-CLS to complete the required input. Go to 4.2-RSL-1 or 4.2-CLS-1.
+4.2–RSL-1. Two RSL sub-options are avaiable for computing the reduction factors applied to
+each surface node where live loads are assigned; (1) constant reduction factor based on cover
+height over crown, or (2) variable reduction factor based on soil cover between each live-load
+surface node and the vertical distance to the structure’s periphery.
+• Enter “1” for RSL constant reduction factor applied to all live-load locations. The
+constant reduction factor is based on minimum soil cover over entire structure (plus
+the span term if activated above). This is considered the traditional and somewhat
+conservative approach. (Default = 1)
+• Or, Enter “2” for RSL variable reduction factor dependendent on live-load location
+relative to the culvert periphery. The variable reduction factor is based on the vertical
+MGK – January 2022
+13
+soil cover beneath the live-load location (plus the span term if activated above).This
+is considered a more realistic approach.
+Comment on RSL methods. RSL sub-option “1” for constant reduction factor based on soil cover
+over the crown is the older traditional RSL method that some investigators still prefer. RSL suboption “2” with variable cover dependent on location of live load relative to the culvert is a newer
+and more realistic approach. However, for a 1-axle live load located directly over the crown both
+sub-options produce the same results. For multiple axle trucks, sub-option “1” tends to be slightly
+more conservative, but this is not always the case.
+4.2–RSL-2. If the CANDE model has pavement elements laying over the soil surface, then enter
+the pavement thickness (inches) to obtain the full beneficial effect of pavements due to enhanced
+longitudianl load spreading. Or enter “blank” to disregard the additional benefits.
+• Enter “pavement thickness” (inches) to obtain full pavement benefits in accordance with
+the Fox elasticity solution. A non-zero entry activates the request for inputting another
+Fox elasticity parameter on the following input line, 4.2–RSL-2.1.
+• Or, Enter “blank” or “0.0” to disregard longitidinal benefits or if no pavement exists.
+Go to 4.2–RSL-3.
+Note: Adding a pavement such as beam-column elements over the soil surface in the CANDE
+model will automatically reduce the live-load distress due to enhanced in-plane loadspreading
+from the plane-strain CANDE model. However, to also obtain the pavement’s out-of-plane load
+spreading requires taking advantage of the Fox solution,
+4.2–RSL-2.1 If “pavement thickness” is greater than 0.0, enter the ratio of the pavement’s
+Youngs modulus – to - backfill soil’s Youngs modulus.
+• Enter “Epave/Esoil” pavement-to-soil modulus ratio. The practical range of ratios ranges
+from 100 to 10,000, and the default value is taken as 100.
+With these Fox parameters, the CANDE Tool Box evaluates the Fox solution to determine the
+effective longitudinal footprint width at the pavement-soil interface in terms of an amplification
+factor, βW > 1. That is, the effective longitudinal footprint on the soil surface is βWW0, which is a
+larger footprint than would occur if the pavement thickness was replaced with soil.
+4.2-RSL-3 The user has the choice to include 3D stiffness effects (3DSE) to potentially further
+reduce the surface load in accordaance AASHTO LRFD Specifications 4.6.2.10 for reinforced
+concrete boxes and arches. This choice is activated by entering a non-zero value for the culvert
+length in response to the screen request:
+• Enter “lay length” of precast r/c culvert (feet) to activate 3DSE.
+Go to line 4.2-RSL-3.1.
+MGK – January 2022
+14
+• Enter “full length” of cast-in-place concrete culverts (feet) to activate 3DSE.
+Go to line 4.2-RSL-3.1
+• Or, Enter “blank” to ignore the special 3DSE effects.
+Go to 4.2-RS-4.
+The 3D stiffness effect (3DSE) is a different kind of phenomenon than longitudinal load
+spreading through the soil. The 3DSE phenomenon is dependent on the culvert’s longitudinal
+stiffness capability to transmit out-of-plane shear and moment forces into portions of the culvert
+not directly experiecing traction stresses from the live load. This beneficial capability is
+manifested by two culvert properties called the minimum distribution width (Wmin) and the
+critical distribution depth (Wcritical). At present, values for Wmin and Wcritical are only documented
+for reinforced concrete boxes and arches as prescribed in AASHTO Article 4.6.2.10.
+4.2-RSL-3.1 Input 3DSE parameters Wmin and Wcritical or accept AASHTO default as follows.
+• Enter “Wmin” minmum distribution width in inches. Or, enter “blank” to accept AASHTO
+Specification; W = ½ 96" + 0.12*Span" , but W Culvert len min ( ) min ≤ gth (inches).
+• Enter “Wcritical” critical distribution width in inches, Or enter “blank” to accept AASHTO
+Specification; W = W critical min .
+Although the current AASHTO specifications imply Wmin = Wcritical (one effective parameter), the
+two parameter methodogy is in anticipation of future changes to the AASHTO LRFD
+Specifications. This little understood 3DSE phenomenon is explained in detail in Reference 3 as
+well as the CANDE Solutions and Formulations Manual.
+4.2-RSL-4 To complete the RSL input, the user has the option to; (a) accept the reduction
+factor(s) that the CANDE Tool Box computed based on all of the above RSL options.
+Or, (b) override all of above with a constant reduction factor computed by the user.
+• Enter “blank” to accept the final reduction factor(s) as computed from the CANDE Tool
+Box and shown on the screen window.
+• Or, Enter “reduction factor” greater tnan 0.0 in order to utilize the user’s self-computed
+reduction factor.
+Note that the CANDE Tool Box no longer supports the old AAM-30o constant angle model for
+load spreading because it is significantly unconsevative at shallow depths. In contrast, the AAMθ* load spreading model used by the CTB is much more accurate as shown in Reference 1.
+However, if the user desires to use the the old AAM-30o load spreading model, then the “usercomputed reduction factor” provides a mechanism to insert this or any other reduction factor.
+MGK – January 2022
+15
+4.2–CLS-1. The CLS procedure automatically employs the exact Elasticity Based Method
+(EBM) for longitudinal load spreading along with the AAM-θ* model to determine the twowheel interaction depths. The only additional information requrired from the user is with regard
+to; (1) pavements and (2) 3D siffness effects.
+If the CANDE model has pavement elements laying over the soil surface, then enter the
+pavement thickness to obtain the full beneficial effect of pavements due to enhanced longitudianl
+load spreading. Or enter “blank” to disregard the additional benefits.
+• Enter “pavement thickness” (inches) to obtain full pavement benefits in accordance with
+the Fox two-layer elasticity solution. A non-zero entry activates the request for inputting
+another Fox parameter on the following line, 4.2–CLS-1.1.
+• Or, Enter “blank” or “0.0” to disregard longitidinal benefits or if no pavement exists. Go
+to 4.2–CLS-2.
+Note: Adding a pavement such as beam-column elements over the soil surface in the CANDE
+model will automatically reduce the live-load distress due to enhanced in-plane loadspreading
+from the plane-strain CANDE model. However, to also obtain the pavement’s out-of-plane load
+spreading requires taking advantage of the Fox solution.
+4.2–CLS-1.1 If “pavement thickness” is greater than 0.0, enter the ratio of the pavement’s
+Youngs modulus – to - backfill soil’s Youngs modulus.
+• Enter “Epave/Esoil” pavement-to-soil modulus ratio. The practical range of ratios is from
+100 to 10,000, and the default value is taken as 100.
+With these Fox parameters, the CANDE Tool Box evaluates the Fox solution to determine the
+effective longitudinal footprint width at the pavement-soil interface in terms of an amplification
+factor, βW > 1. That is, the effective longitudinal footprint on the soil surface is βWW0, which is a
+larger footprint than would occur if the pavement thickness was replaced with soil.
+4.2 -CLS-2 The user has the choice to include 3D stiffness effects (3DSE) to potentially
+decrease distress in the culvert in accordance wiyh AASHTO LRFD Specifications 4.6.2.10 for
+reinforced concrete boxes and arches. This choice is activated by entering a non-zero value for
+the culvert length in response to the screen request:
+• Enter “lay length” of precast r/c culvert (feet) to activate 3DSE.
+Go to line 4.2-CLS-2.1.
+• Enter “full length” of cast-in-place concrete culverts (ft) to activate 3DSE.
+Go to line 4.2-CLS-2.1.
+• Or, Enter “blank” to ignore the special 3DSE effects.
+Go to line 5.
+MGK – January 2022
+16
+The 3D stiffness effect (3DSE) is a different kind of phenomenon than longitudinal load
+spreading through the soil. The 3DSE phenomenon is dependent on the culvert’s longitudinal
+stiffness capability to transmit out-of-plane shear and moment forces into portions of the culvert
+not directly experiecing traction stresses from the live load. This beneficial capability is
+manifested by two culvert properties called the minimum distribution width (Wmin) and the
+critical distribution depth (Wcritical). At present, values for Wmin and Wcritical are only documented
+for reinforced concrete boxes and arches as prescribed in AASHTO Article 4.6.2.10.
+4.2-CLS-2.1 Input 3DSE parameters Wmin and Wcritical or accept AASHTO default as follows.
+• Enter “Wmin” minmum distribution width in inches. Or, enter “blank” to accept AASHTO
+Specification; W = ½ 96" + 0.12*Span" , but W Culvert len min ( ) min ≤ gth (inches).
+• Enter “Wcritical” critical distribution width in inches, Or enter “blank” to accept AASHTO
+Specification; W = W critical min .
+Although the current AASHTO specifications imply Wmin = Wcritical (one effective parameter), the
+two parameter methodogy is in anticipation of future changes to the AASHTO LRFD
+Specifications. This little understood 3DSE phenomenon is explained in detail in Reference 3 as
+well as the CANDE Solutions and Formulations Manual.
+Comment on CLS Method. The CLS method is more accurate than the RSL methods and is
+easier to use because CLS internally applies the appropriate amplification factor to each
+element’s thickness as a function the element depth beneath the travel surface. No reduction
+factors are calculated or used; rather, the truck’s service line-load is applied directly to the surface
+nodes. Thus, the soil beneath the wheel experiences the actual transmitted state of stress, not a
+reduced stress state like RSL. The CANDE Tool Box automatically generates the additional line
+C-2b.L3 in the CANDE input file as well as line C-2c.L3 if the the Fox pavement benefit is
+activated.
+5. Do you wish to apply an LRFD or LRFR load factor to all live-loading steps?
+If yes,
+• Enter load factor applied to all live loads.
+• Or accept default value. Default = 1.75 (ASSHTO LRFD)
+LRFD (or LRFR) load factors are stored separately at the end of the CANDE input file (E-lines)
+as a function of load step. Load factors are applied to the service loads generated above prior to
+each incremental solution obtained at each load step. The beauty of this arrangement is that the
+user may execute solutions with new load factors without having to regenerate the service loads.
+6. Identify load-step number to initiate the first vehicle loading.
+• Enter load-step number to begin vehicle loading.
+• Or, accept default load step,
+ Default = first load step after construction is complete & lane load is applied.
+MGK – January 2022
+17
+7. Identify key axle number for positioning vehicle relative to structure.
+• Enter key axle number of vehicle for positioning.
+• Or, accept default axle number.
+ Default = axle number of heaviest axle (first axle number for same weight axles),
+ for example, the key axle number for HL93 Design trucks = 2nd axle.
+8. Identify the surface node number for the initial key-axle position.
+• Enter surface node number for starting position of key axle.
+• Or, accept default node number.
+ Default = the surface node located directly above the left periphery of the structure.
+9. Identify the surface node number for the final key-axle position.
+• Enter surface node number for final position of key axle.
+• Or, accept default node number.
+ Default = the surface node located directly above the right periphery of the structure.
+10. Select node-loading method for axles other than the key axle. Non-key axles are
+invariably positioned between two adjacent surface nodes, rather than positioned on a
+single node like the key axle.
+
+• Enter “1” to apply non-key axle loads at only one node, i.e., the node closest to
+key-axle position (conservative approach). Default method
+• Or, Enter “2” to apply load to both nodes in proportion to the node’s proximity
+to the non-key axle load. Thus if the axle is located midway between the nodes,
+each node would receive 50% of the non-key axle load (reasonable approach).
+Comment on vehicle travel path. Vehicle travel is from left to right wherein the key-axle is
+placed at the starting node for the initial live-load step and then advances to the next adjacent
+node on the next load and so on until the key axle is advanced to the final node position. Thus, the
+number of load-steps associated with vehicle travel is equal to the number of nodes along the
+key-axle path. All other axles (if any) track in lock-step fashion as dictated by their fixed
+distances from the key axle. These non-key axle loads are applied to either one node (worst case)
+or distributed to two nodes (reasonable case) per user’s selection in item 10. The one-node
+method uses that node of the node pair that is closest to the key-axle load and thereby localizing
+load contributions, a conservative method. Alternatively, the two-node method provides a more
+realistic, but slightly less consevative approach.
+All of the above input data and selections made by the user are permenantly recorded at the end of the
+new input file. For example, the result of applying Option 3 to a full mesh version of CANDE Tutorial-7
+for a pavement overlay with full Fox benefits plus 3DSE turned on and analysed using CLS for passage
+of a tanden truck is copied below.
+MGK – January 2022
+18
+OPTION 4: Minimize Bandwidth.
+This option is applicable to any existing Level-3 input file wherein node numbering is not optimum and is
+alternative to using CANDE’s internal bandwidth minimizer. The downside of CANDE’s internal
+bandwidth minimizer is that it is time consuming and must be repeated every time the input file is
+executed. In contrast, the Tool Box bandwidth minimizer creates a permanent change in the nodal
+numbering scheme within the new input file so that input file may be executed multiple times without the
+need of any further bandwidth minimization. No additional data is required for Option 4.
+Bandwidth is proportional to the maximum difference in the nodal numbers assigned to any element. A
+prime cause of large bandwidths comes from adding nodes and elements into an existing finite model
+such as introducing an interface or link element between existing elements thereby causing a large
+mismatch in the element’s nodal numbers. Another example is a result of Tool Box Option 1 wherein the
+first row of elements on the mirror side of the centerline contains a fusion of low-numbered and highUSER-SELECTED LIVE LOAD PARAMETERS:
+* Initially applied lane pressure (psi) = 0.4444
+* Number of axles on vehicle = 2
+* Key axle number for tracking = 1
+* Starting node for key axle = 262
+* Ending node for key axle = 128
+* Beginning vehicle load step # = 8
+* Ending vehicle load step # = 16
+* Number of nodes loaded for Non-key axles = 2
+VEHICLE CHARACTERISTICS PER AXLE:
+ Axle Axle Distance to Wheel LxW Wheel tire Wheel line
+ number load, lbs key-axle, ft print, in spacing, ft load, lbs/in
+ 1 25000.00 0.00 10 x 20 6.00 625.00
+ 2 25000.00 -4.00 10 x 20 6.00 625.00
+MULTIPLIERS ON WHEEL LINE-LOAD DEFINING SERVICE LOAD.
+CANDE BOUNDARY CONDITIONS SHOW THE FINAL SERVICE LOAD.
+* Multilane presence factor (multiplier) = 1.200
+* Dynamic impact factor (multiplier) = 1.248
+LONGITUDINAL LOAD SPREADING, PAVEMENTS, AND3D STIFFNESS EFFECTS
+User choose Continuous Load Scaling (CLS) method
+* All live-loads are defined at full-service values.
+* See Boundary Conditions (C-5 lines) for values.
+* Two-wheel interaction depth, Hinteract = 35.00(inches).
+Full pavement benefits (Fox) are applied to system.
+* Pavement thickness, Pthick = 8.00(inches)
+* Pavement-to-soil modulus ratio = 100.00
+* W-footprint amplifier at soil surface, Beta-W = 2.765
+3D Stiffness effects are applied to culvert:
+* Minimum 3DSE distribution width, Wmin = 55.80
+* Critical 3DSE distribution width, Wcritical = 55.80
+LIVE-LOAD FACTORS FOR LRFD or LRFR ANALYSIS ARE SHOWN
+IN THE LAST SEGMENT OF THE ABOVE CANDE INPUT FILE AND ARE
+AUTOMATICALLY APPLIED TO THE SERVICE LOADS SHOWN IN THE BCs
+MGK – January 2022
+19
+numbered node numbers. Thus, applying Option 4 to full Level-3 meshes created from Option 1 is
+generally a good idea to reduce the time for each CANDE solution.
+The procedure to minimize bandwidth is to permenantly redefine the nodal numbering, not the coordinate
+values, but just the node number assigned to the coordinates. This is achieved by starting with node "1"
+in lower left corner of element located in the lower left corner of the mesh. Node numbers are
+sequentially increased for the next upward element and so on up to the top surface. Next shiftng to the
+bottom of the mesh, the process is repeated again and again until the entire mesh has been processed.
+During the process an “ is/was” vector is developed that correlates the old node number to the new node
+number. The is/was vector is used to assign the new node numbers to the element connectivity array and
+to update the boundary conidtions with the new node numbers.
+The originating CID file and the new CID file should produce the same results except for round-off error
+which is less for the new file with the Bmin prefix because there are less calaluations in solving the global
+system of equations.
+OPTION 5: Calculate Load Rating Factor RF.
+This option is applicable to any existing Level-2 or Level-3 output file that contains live loads. Ideally
+the CANDE analysis should use LRFD methodology, which is directly related to LRFR load rating
+analysis. Working Stress methodology may be used; however, the user must adjust the applied loads and
+capacities to represent factored values. The basic assumption is that the associated CANDE input file is
+developed especially for the particular culvert installation and vehicle being load rated. That is, the load
+factors, resistance factors, and system parameters are in accordance with the governing LRFR
+specifications such as ASSHTO Manual for Bridge Evaluation.
+As defined below, the AASHTO load rating factor RFn must be greater or equal to 1 for all strengthrelated design criteria in order for a particular vehicle to safely passover the culvert installation.
+dead
+n n
+n live
+n
+C - D RF = 1
+D
+≥ for n = 1, 2, 3 … Equation 5a
+where, Cn = factored capacity (resistance) for design criterion n.
+Dn
+dead = factored dead-load demand for dead and earth loads for design criterion n
+Dn
+live = factored live-load demand for vehicle and lane loads for design criterion n
+ n = index number for design criterion, which is dependent on culvert material.
+Said another way, if RFn ≥ 1.0 for all design criterions n =1, 2, 3 …, then the culvert safely passes the
+load-rating test for the particular live load analyzed. The minimum RFn value (simply referred to as RF) is
+the controlling value, and its value is a multiple of the live-load safety. For example, if RF = 1.80, the
+culvert system is capable of safely carrying a live-load approximately 1.8 times greater than the
+magnitude of live-load analyzed.
+It is important to understand that Equation 5a is exactly equivalent to the LRFD design requirement that
+the ratio of the total factored demand to factored capacity is less than 1 for all design criteria. That is,
+MGK – January 2022
+20
+total
+n
+n
+n
+D Ratio = 1
+C
+≤ for n = 1, 2, 3 … Equation 5b
+where, Dn
+total = Dn
+dead + Dn
+live = total factored demand for design criterion n.
+To prove that the inequality in Equation 5b is exactly equivalent to the inequality in Equation 5a, muliply
+both sides of inequality 5b by the factored capacity Cn , then replace Dn
+total with the above component
+definition and subtract Dn
+dead from both sides, and finally divide by Dn
+live to get the same
+inequality shown in 5a.
+Since CANDE automatically computes Equation 5b in the “assessment summary” at the end of each load
+step, the equivalence of the inequalities expressed in Equations 5a and 5b has the following useful benefit.
+If the CANDE solution shows that the assessment summaries satisfy, Ration < 1.0, for all load steps and
+all design criteria, then it is guaranteed that all RFn > 1, meaning the live-load safely passes the load
+rating test. The opposite is also true, if Ration > 1.0 at any load step and for any design criterion, then it is
+guaranteed that RFn < 1, meaning the live-load did not safely pass the load rating test.
+Thus, if an engineer only wants to know if a particular vehicle passes the load rating test (RF ≥ 1), then it
+is only necessary to scan the CANDE assessment summaries to verify that all Ratios are ≤ 1 for all load
+steps. On the other hand, if an engineer wants to know the controlling RFn values, then a much more
+extensive search through the CANDE output report is required, not just the assessment summaries. This is
+because the load step and node where Ration is maximum is not necessarily the same load step and node
+where RFn is minimum. Only in the case Ration = RFn = 1, can it be guaranteed that controlling demandto-capacity ratio and the controlling load-rating factor occur at the same node and load step.
+To initiate load-rating process (Option 5), the user is requested to identify the pipe group number under
+investigation, the load-step number that completes dead loads, and the live-load step numbers that define
+the start and end of the vehicle travel path whether it be 1 step or many. As noted below the CTB program
+provides reasonable default values that may be accepted in lieu of entering data.
+1. Identify structure or sub-structure to be load rated.
+• Enter “pipe-group number” of structure to be load rated.
+• Or, enter “blank” to accept default value = 1.
+Often there is only 1 pipe group in the input file so that the default value usually applies. However
+if multiple pipe groups are defined, then choose the group number of the desired structure to be
+load rated. Other structures (groups) may be load rated on repeated applications of Option 5.
+2. Identify load step number representing the completion of dead loads.
+• Enter “load-step number” for Stepdead, the last load step of dead loads.
+• Or enter “blank” to accept default for Stepdead.
+Default Stepdead = highest load-step number found in the element property array IX(6).
+3. Identify load step number representing the start of live loads.
+• Enter “load-step number” for StepLL-start, the start of live loads.
+• Or enter “blank” to accept default for StepLL-start.
+Default StepLL-start = Stepdead + 1, (i.e., begining live-load step follows dead loads)
+MGK – January 2022
+21
+4. Identify load step number representing the end of live loads.
+• Enter “load-step number” for StepLL-end, the end of live loads,
+• Or enter “blank” to accept default for StepLL-end .
+Default StepLL-end = Last declared load step, (i.e., input value NINC).
+The CANDE Tool Box (CTB) program undertakes a brute force search through the CANDE output file to
+collect all the relevant data needed to ultimately determine the controlling RF value (minimum), along
+with the associated load-step number (vehicle location), design criterion (failure mode), and node number
+(location in structure). The CTB step-by-step search and data collection procedure is described below:
+a) From the assessment summaries at the end of each load step, the controlling demand and capacity
+values are collected for each design criterion at the controlling node with highest demand-tocapacity ratio. From this set of data, CTB verifies the demands of the dead-load step (Stepdead) do
+not exceed the corresponding capacities for all design criteria, i.e., Ration ≤ 1. If this is not true,
+then dead-load demand already exceeds the capacity so that any additional live loading is not safe
+(negative rating factor). If this occurs, the load rating analysis is terminated and a message is
+printed on the screen and the output report describes the dead-load condition.
+b) Next, CTB undertakes a much larger data collection process to find and store demand and
+capacity values in large 3-component arrays, i.e., values for each design criteria, load step and
+node. The collection process is complicated by the different design criteria and diagnostic formats
+for each pipe type. In particular, the recovery of factored capacities requires melding information
+from the assessment summaries and pipe-type diagnostic data. The large 3-compnent array is
+used to extract three subsets of load-rating data that are printed, called tertiary, secondary and
+primary data sets.
+c) CTB’s tertiary information is the most comprehensive set of printed load-rating data and shows
+the controlling RF-values at each node as a separate list under each design criterion. Each node’s
+controlling rating factor is determined by finding the lowest rating factor observed over all liveload steps (StepLL-start to StepLL-end.), and the controlling load step is also shown on the list.
+d) CTB’s secondary information identifies the controlling RF-values for each design criterion along
+with the associated node and load step. The secondary information is a subset of the tertiary set
+wherein the node with the lowest RF-value is identified as the controlling node for that design
+criterion.
+e) Finally, CTB’s primary data is the bottom-line information that identifies the overall controlling
+RF-value along with the controlling design criterion, load step and node.
+The above process could be accomplished manually by the user, but with a great deal of difficulty. Option
+5 provides an automated data retrieval process and error-free calculation of RF-values. Primary,
+secondary, and tertiary data sets and all supporting information are printed at the end of the CANDE
+output report so that all information is available in one document.
+MGK – January 2022
+22
+An illustration of the Option 5 printout is shown below for the previous example input/output file
+illustrated for Option 3, named Live-Pave-Full-Tutorial-7. The load-rating summary is printed
+immediately following the message, Normal Exit from CANDE, which marks the end of the
+normal CANDE output report.
+
+ * * * * NORMAL EXIT FROM CANDE * * * *
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ -- CANDE TOOL BOX --
+ LOAD RATING REPORT, PIPE-GROUP = 1
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+LOAD RATING SUMMARY FOR PIPE-GROUP = 1, PIPE TYPE = CONCRETE
+CANDE FILE NAME: Live-Pave-Full-Tutorial 7.out
+USER-DEFINED KEY LOAD STEPS FOR LOAD RATING ANALYSIS:
+* Load step used for dead/earth load RF reference = 6
+* Load step beginning live-load search range = 7
+* Load step terminating live-load search range = 16
+BOTTOM LINE FINDINGS FOR LOAD RATING OF CULVERT
+* Controlling design criterion = STEEL YIELDING (psi)
+* Controlling load-rating factor RF = 1.40
+* Controlling local-node number = 24
+* Controlling live-load step number = 14
+* Safety assessment of culvert = SAFE
+LOWEST RATING FACTORS PER DESIGN CRITERION AT CONTROLLING LOAD STEP AND NODE:
+DESIGN-CRITERION LOAD LOCAL DEAD-LOAD LIVE-LOAD EFFECTIVE *RATING
+ (Strength) STEP NODE DEMAND DEMAND CAPACITY FACTOR
+*STEEL YIELDING (psi) 14 24 14515.47 31511.24 58500.00 1.40
+*CONCRETE CRUSHING (psi) 14 6 667.23 1203.88 3750.00 2.56
+*SHEAR FAILURE (lbs/in) 13 26 208.79 453.46 973.00 1.69
+*RADIAL-TENSION FAIL (psi) 15 1 0.02 0.03 61.10 2036.00
+DEFINITIONS AND RELATIONS FOR EACH CRITERION "n":
+* Rating Factor(n) = (Capacity(n) - Dead(n))/Live(n)
+* Total Demand(n) = Dead(n) + Live(n) at specified node
+* Dead(n) = Dead load demand for criterion n (factored)
+* Live(n) = Live load demand for criterion n (factored)
+* Capacity(n) = Capacity for criterion n (factored)
+- - - - - - ADDITIONAL DIAGNOSTICS FOR ALL NODES (not shown) - - - - - - - -
+MGK – January 2022
+23
+REFERENCES
+(1) M. G. Katona, “Assessment of AASHTO Load-Spreading Method for Buried Culverts and Proposed
+Improvement”, to be published in Transportation Research Record 2021.
+(2) M.G. Katona, Extension of AASHTO Load-Spreading Method to Include the Full Benefits of
+Pavements for Reliable Load Rating of Buried Culverts, submitted for publication in TRR, 2022
+(3) M. G. Katona, CANDE Solution Methods and Formulations Manual, Chap. 8.1, 2022.
+This concludes the CANDE Tool Box Manual

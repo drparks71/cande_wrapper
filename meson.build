@@ -143,5 +143,23 @@ py.extension_module('_cande',
 py.install_sources(
   'src' / 'cande_wrapper' / '__init__.py',
   'src' / 'cande_wrapper' / 'engine.py',
+  'src' / 'cande_wrapper' / 'pipes.py',
+  'src' / 'cande_wrapper' / 'vehicle.py',
+  'src' / 'cande_wrapper' / 'visualization.py',
   subdir: 'cande_wrapper',
+)
+
+py.install_sources(
+  'src' / 'cande_wrapper' / 'toolbox' / '__init__.py',
+  'src' / 'cande_wrapper' / 'toolbox' / 'cid_model.py',
+  'src' / 'cande_wrapper' / 'toolbox' / 'cid_parser.py',
+  'src' / 'cande_wrapper' / 'toolbox' / 'cid_writer.py',
+  'src' / 'cande_wrapper' / 'toolbox' / 'out_parser.py',
+  'src' / 'cande_wrapper' / 'toolbox' / 'load_spreading.py',
+  'src' / 'cande_wrapper' / 'toolbox' / 'option1_full_mesh.py',
+  'src' / 'cande_wrapper' / 'toolbox' / 'option2_pavement.py',
+  'src' / 'cande_wrapper' / 'toolbox' / 'option3_live_loads.py',
+  'src' / 'cande_wrapper' / 'toolbox' / 'option4_bandwidth.py',
+  'src' / 'cande_wrapper' / 'toolbox' / 'option5_rating.py',
+  subdir: 'cande_wrapper' / 'toolbox',
 )

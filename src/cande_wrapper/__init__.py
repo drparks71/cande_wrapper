@@ -31,7 +31,7 @@ __all__ = [
 
 
 def __getattr__(name):
-    """Lazy-load visualization functions so plotly is only required on use."""
+    """Lazy-load visualization functions and toolbox subpackage."""
     _viz_names = {
         "parse_beam_results",
         "parse_mesh_geom",
@@ -47,4 +47,7 @@ def __getattr__(name):
     if name in _viz_names:
         from cande_wrapper import visualization
         return getattr(visualization, name)
+    if name == "toolbox":
+        from cande_wrapper import toolbox as _toolbox
+        return _toolbox
     raise AttributeError(f"module 'cande_wrapper' has no attribute {name!r}")
