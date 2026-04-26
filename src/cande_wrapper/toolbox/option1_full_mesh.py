@@ -76,6 +76,7 @@ def _mirror_elements(
 
         new_elements.append(Element(
             id=new_id, nodes=new_nodes, mat=elem.mat, step=elem.step,
+            type_code=elem.type_code,
         ))
 
     return new_elements
@@ -232,6 +233,8 @@ def half_to_full_mesh(
         level=3,
         method=orig.master.method,
         num_steps=orig.master.num_steps,
+        npgrps=orig.master.npgrps,
+        itmax=orig.master.itmax,
         heading=orig.master.heading,
     )
 

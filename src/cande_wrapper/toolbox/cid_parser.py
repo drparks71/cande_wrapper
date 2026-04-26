@@ -63,18 +63,36 @@ def _parse_floats(text: str, count: int | None = None) -> list[float]:
 
 
 def _parse_a1(data: str) -> MasterControl:
-    """Parse the A-1 line data portion."""
+    """Parse the A-1 line data portion.
+
+    Level 3 format: MODE LEVEL LRFD NPGRPS HED(15A4) ITMAX
+    Level 1/2 format: MODE LEVEL LRFD NUM_STEPS HED(15A4) ITMAX
+
+    The 4th field is NPGRPS for Level 3, or NUM_STEPS for Level 1/2.
+    Both can appear as int or float (e.g. '160.').
+    """
     parts = data.split()
-    mode = parts[0] if parts else "ANALYS"  # ANALYS or DESIGN
+    mode = parts[0] if parts else "ANALYS"
     level = int(parts[1]) if len(parts) > 1 else 3
     method = int(parts[2]) if len(parts) > 2 else 0
-    # num_steps: could be int or float (e.g. "160.")
-    num_steps_str = parts[3] if len(parts) > 3 else "1"
-    num_steps = int(float(num_steps_str))
-    heading = " ".join(parts[4:]) if len(parts) > 4 else ""
+    # 4th field: NPGRPS (Level 3) or NUM_STEPS (Level 1/2)
+    field4 = int(float(parts[3])) if len(parts) > 3 else 1
+    # Remaining parts form the heading; ITMAX may be the last integer
+    rest = parts[4:] if len(parts) > 4 else []
+    itmax = 0
+    heading = ""
+    if rest:
+        try:
+            itmax = int(rest[-1])
+            heading = " ".join(rest[:-1])
+        except ValueError:
+            heading = " ".join(rest)
+
+    npgrps = field4 if level == 3 else 1
+    num_steps = field4
     return MasterControl(
         mode=mode, level=level, method=method,
-        num_steps=num_steps, heading=heading,
+        num_steps=num_steps, npgrps=npgrps, itmax=itmax, heading=heading,
     )
 
 
@@ -89,7 +107,10 @@ def _parse_node_line(data: str) -> Node:
 
 
 def _parse_element_line(data: str) -> Element:
-    """Parse a C-4.L3 element line: elem_id n1 n2 n3 n4 mat_step."""
+    """Parse a C-4.L3 element line.
+
+    Fortran format: I4,7I5 → elem_id n1 n2 n3 n4 mat step type_code
+    """
     parts = data.split()
     elem_id = int(parts[0])
     n1 = int(parts[1])
@@ -97,8 +118,10 @@ def _parse_element_line(data: str) -> Element:
     n3 = int(parts[3]) if len(parts) > 3 else 0
     n4 = int(parts[4]) if len(parts) > 4 else 0
     mat = int(parts[5]) if len(parts) > 5 else 1
+    step = int(parts[6]) if len(parts) > 6 else 1
+    type_code = int(parts[7]) if len(parts) > 7 else 0
     nodes = (n1, n2) if n3 == 0 and n4 == 0 else (n1, n2, n3, n4)
-    return Element(id=elem_id, nodes=nodes, mat=mat, step=1)
+    return Element(id=elem_id, nodes=nodes, mat=mat, step=step, type_code=type_code)
 
 
 def _parse_bc_line(data: str) -> BoundaryCondition:

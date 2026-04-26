@@ -48,6 +48,21 @@ class NodeRating:
     capacity: float
 
 
+def _safety_decision(rf: float) -> str:
+    """Determine the 4-level safety assessment per Fortran source.
+
+    Matches AA-Load Rating Master.for lines 295–303.
+    """
+    if rf >= 1.10:
+        return "SAFE"
+    elif rf >= 1.00:
+        return "BORDERLINE SAFE"
+    elif rf >= 0.90:
+        return "BORDERLINE UNSAFE"
+    else:
+        return "NOT SAFE"
+
+
 @dataclass
 class RatingResult:
     """Complete load rating analysis results."""
@@ -58,6 +73,7 @@ class RatingResult:
     primary_node: int = 0
     primary_step: int = 0
     is_safe: bool = False
+    decision: str = ""  # SAFE, BORDERLINE SAFE, BORDERLINE UNSAFE, NOT SAFE
 
     # Secondary: per criterion
     secondary: list[CriterionRating] = field(default_factory=list)
@@ -98,7 +114,7 @@ def _format_rating_report(
         f"* Controlling load-rating factor RF = {result.primary_rf:.2f}",
         f"* Controlling local-node number = {result.primary_node}",
         f"* Controlling live-load step number = {result.primary_step}",
-        f"* Safety assessment of culvert = {'SAFE' if result.is_safe else 'NOT SAFE'}",
+        f"* Safety assessment of culvert = {result.decision}",
         "",
         "LOWEST RATING FACTORS PER DESIGN CRITERION AT CONTROLLING LOAD STEP AND NODE:",
         f"{'DESIGN-CRITERION':30s} {'LOAD':>5s} {'LOCAL':>6s} {'DEAD-LOAD':>12s} "
@@ -296,12 +312,14 @@ def compute_rating_factor(
         primary_node = 0
         primary_step = 0
 
+    decision = _safety_decision(primary_rf)
     result = RatingResult(
         primary_rf=primary_rf,
         primary_criterion=primary_criterion,
         primary_node=primary_node,
         primary_step=primary_step,
         is_safe=primary_rf >= 1.0,
+        decision=decision,
         secondary=secondary,
         tertiary=tertiary,
     )

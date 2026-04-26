@@ -16,12 +16,20 @@ class Node:
 
 @dataclass
 class Element:
-    """A finite element with connectivity, material group, and construction step."""
+    """A finite element with connectivity, material group, and construction step.
+
+    type_code values (from Fortran IX column 7):
+        0 = normal continuum element
+        1 = interface element (FACE / XFACE)
+        8 = LINK-8 element
+        9 = LINK-9 element
+    """
 
     id: int
     nodes: tuple[int, ...]
     mat: int
     step: int
+    type_code: int = 0
 
 
 @dataclass
@@ -43,8 +51,10 @@ class MasterControl:
 
     mode: str  # "ANALYS" or "DESIGN"
     level: int  # 1, 2, or 3
-    method: int  # 0 or 1 (LRFD flag, etc.)
+    method: int  # 0 or 1 (LRFD flag)
     num_steps: int
+    npgrps: int = 1  # number of pipe groups
+    itmax: int = 0  # max iterations
     heading: str = ""
     raw_line: str = ""
 

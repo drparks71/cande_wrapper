@@ -66,3 +66,7 @@ _build/
 /CANDE Source/CANDEEngine-2025 - MGK Source/IO/*.vfproj
 # Inc: exclude non-source-code sidecar file
 /CANDE Source/CANDEEngine-2025 - MGK Source/Inc/sizepr
+
+# CANDE Tool Box source transmit (proprietary Fortran source, not for repo)
+/CANDE Source/CANDE Tool Box - 2025 - Source Transmit.zip
+/CANDE Source/CANDE Tool Box - 2025 - Source Transmit/

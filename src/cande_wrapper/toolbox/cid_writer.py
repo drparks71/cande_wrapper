@@ -54,23 +54,32 @@ def _write_node(node: Node, has_tags: bool, is_last: bool = False) -> str:
 
 
 def _write_element(elem: Element, has_tags: bool, is_last: bool = False) -> str:
-    """Write a C-4.L3 element line."""
+    """Write a C-4.L3 element line.
+
+    Fortran format: I4,7I5 → elem_id n1 n2 n3 n4 mat step type_code
+    """
     tag = _fmt_tag("C-4.L3!!", is_last) if has_tags else ""
     n = elem.nodes
     if len(n) == 2:
         nodes_str = f"{_fmt_int(n[0])}{_fmt_int(n[1])}{_fmt_int(0)}{_fmt_int(0)}"
     else:
         nodes_str = "".join(_fmt_int(ni) for ni in n[:4])
-    return f"{tag}{_fmt_int(elem.id)}{nodes_str}{_fmt_int(elem.mat)}"
+    return (
+        f"{tag}{_fmt_int(elem.id, 4)}{nodes_str}"
+        f"{_fmt_int(elem.mat)}{_fmt_int(elem.step)}{_fmt_int(elem.type_code)}"
+    )
 
 
 def _write_bc(bc: BoundaryCondition, has_tags: bool, is_last: bool = False) -> str:
-    """Write a C-5.L3 boundary condition line."""
+    """Write a C-5.L3 boundary condition line.
+
+    Fortran format: node(I4) IFLGX(I5) BIVDX(F10.3) IFLGY(I5) BIVDY(F10.3) ASKEW(F10.3) IAB(I5)
+    """
     tag = _fmt_tag("C-5.L3!!", is_last) if has_tags else ""
     return (
-        f"{tag}{_fmt_int(bc.node)}{_fmt_int(bc.x_code)}"
-        f"{_fmt_float(bc.x_value)}{_fmt_int(bc.y_code)}"
-        f"{_fmt_float(bc.y_value)}"
+        f"{tag}{_fmt_int(bc.node, 4)}{_fmt_int(bc.x_code)}"
+        f"{bc.x_value:10.3f}{_fmt_int(bc.y_code)}"
+        f"{bc.y_value:10.3f}{bc.angle:10.3f}{_fmt_int(bc.step)}"
     )
 
 

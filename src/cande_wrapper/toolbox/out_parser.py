@@ -172,12 +172,23 @@ def _parse_element_data(lines: list[str], start: int) -> tuple[list[Element], in
             mat = int(m.group(6))
             step = int(m.group(7))
             etype = m.group(8)
+            # Map output element type string to type_code
+            # FACE -> 1, LINK-8 -> 8, LINK-9 -> 9, else -> 0
+            eu = etype.upper()
+            if eu == "FACE":
+                type_code = 1
+            elif eu == "LINK-8":
+                type_code = 8
+            elif eu == "LINK-9":
+                type_code = 9
+            else:
+                type_code = 0
             if n3 == 0 and n4 == 0:
                 nodes = (n1, n2)
             else:
                 nodes = (n1, n2, n3, n4)
-            elements.append(Element(id=eid, nodes=nodes, mat=mat, step=step))
-            if etype.upper() == "BEAM":
+            elements.append(Element(id=eid, nodes=nodes, mat=mat, step=step, type_code=type_code))
+            if eu == "BEAM":
                 num_beams += 1
             i += 1
         else:

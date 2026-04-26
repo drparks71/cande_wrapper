@@ -127,3 +127,28 @@ class TestRatingFactorComputation:
         live = 20.0
         rf = (capacity - dead) / live
         assert rf < 0
+
+
+class TestSafetyDecision:
+    """Test 4-level safety assessment per Fortran source."""
+
+    def test_safe(self):
+        from cande_wrapper.toolbox.option5_rating import _safety_decision
+        assert _safety_decision(1.10) == "SAFE"
+        assert _safety_decision(2.0) == "SAFE"
+
+    def test_borderline_safe(self):
+        from cande_wrapper.toolbox.option5_rating import _safety_decision
+        assert _safety_decision(1.05) == "BORDERLINE SAFE"
+        assert _safety_decision(1.00) == "BORDERLINE SAFE"
+
+    def test_borderline_unsafe(self):
+        from cande_wrapper.toolbox.option5_rating import _safety_decision
+        assert _safety_decision(0.95) == "BORDERLINE UNSAFE"
+        assert _safety_decision(0.90) == "BORDERLINE UNSAFE"
+
+    def test_not_safe(self):
+        from cande_wrapper.toolbox.option5_rating import _safety_decision
+        assert _safety_decision(0.89) == "NOT SAFE"
+        assert _safety_decision(0.0) == "NOT SAFE"
+        assert _safety_decision(-1.0) == "NOT SAFE"
