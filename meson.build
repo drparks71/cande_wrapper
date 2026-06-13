@@ -143,5 +143,8 @@ py.extension_module('_cande',
 py.install_sources(
   'src' / 'cande_wrapper' / '__init__.py',
   'src' / 'cande_wrapper' / 'engine.py',
+  'src' / 'cande_wrapper' / 'pipes.py',
+  'src' / 'cande_wrapper' / 'vehicle.py',
+  'src' / 'cande_wrapper' / 'visualization.py',
   subdir: 'cande_wrapper',
 )

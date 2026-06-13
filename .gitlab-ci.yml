@@ -94,6 +94,14 @@ publish_pypi:
     - build_windows
     - build_sdist
   script:
+    # Smoke-test a built wheel before anything reaches PyPI: a wheel that
+    # is missing package modules (meson install_sources drift) must fail
+    # here, not on users' machines.
+    - pip install dist/*cp310*manylinux*.whl
+    - python -c "import cande_wrapper;
+        from cande_wrapper import CandeEngine, Vehicle, PrecastConcrete;
+        from cande_wrapper import parse_beam_results, parse_mesh_geom;
+        print('wheel import OK', cande_wrapper.Vehicle.hs20().total_weight)"
     - pip install twine
     - twine upload dist/*
   rules:
