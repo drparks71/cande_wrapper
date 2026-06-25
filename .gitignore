@@ -29,7 +29,8 @@ _build/
 # Virtual environments
 .venv/
 
-# CANDE Source: exclude everything except Engine/, IO/, and Inc/ source files
+# CANDE Source: proprietary Fortran source, kept local only, never tracked
+/CANDE Source/
 /CANDE Source/*.pdf
 /CANDE Source/*.docx
 /CANDE Source/CANDEEngine-2025 - MGK Source/AA-CANDE Output_Viewer/
