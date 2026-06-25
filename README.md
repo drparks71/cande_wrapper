@@ -1,9 +1,9 @@
 # cande-wrapper
 
-<img alt="Pipeline" src="https://daneparks.com/Dane/cande-wrapper/badges/main/pipeline.svg">
-<img alt="Coverage" src="https://daneparks.com/Dane/cande-wrapper/badges/main/coverage.svg">
-<img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/cande-wrapper">
-![PyPI - License](https://img.shields.io/pypi/l/cande-wrapper)
+[![Pipeline](https://daneparks.com/Dane/cande-wrapper/badges/main/pipeline.svg)](https://daneparks.com/Dane/cande-wrapper/-/pipelines)
+[![Coverage](https://daneparks.com/Dane/cande-wrapper/badges/main/coverage.svg)](https://daneparks.com/Dane/cande-wrapper/-/pipelines)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/cande-wrapper)](https://pypi.org/project/cande-wrapper/)
+[![PyPI - License](https://img.shields.io/pypi/l/cande-wrapper)](https://pypi.org/project/cande-wrapper/)
 [![PyPI Downloads](https://static.pepy.tech/badge/cande-wrapper/month)](https://pepy.tech/projects/cande-wrapper)
 
 Python wrapper for the [CANDE](https://www.fhwa.dot.gov/engineering/hydraulics/software/culvertanalysis.cfm) (Culvert ANalysis and DEsign) finite element engine.
