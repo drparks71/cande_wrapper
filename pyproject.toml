@@ -29,6 +29,7 @@ classifiers = [
 ]
 dependencies = [
     "numpy>=1.26",
+    "defusedxml>=0.7",
 ]
 
 [project.optional-dependencies]

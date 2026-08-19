@@ -11,7 +11,7 @@ Requires the ``plotly`` package::
 
 from __future__ import annotations
 
-import xml.etree.ElementTree as ET
+import defusedxml.ElementTree as ET  # stdlib etree is XXE-vulnerable
 from pathlib import Path
 from typing import Optional
 
