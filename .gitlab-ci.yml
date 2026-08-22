@@ -33,12 +33,21 @@ sec:trivy:
 evidence:publish:
   tags: [docker]
 
+# The proprietary CANDE engine source is never tracked in this repo — CI
+# fetches it from the private Dane/cande-engine-source project (job-token
+# allowlisted there) into the gitignored "CANDE Source/" dir meson expects.
+# The sdist stays clean: meson-python packs tracked files only.
+.fetch_engine_source: &fetch_engine_source
+  - rm -rf "CANDE Source"
+  - git clone --depth 1 "https://gitlab-ci-token:${CI_JOB_TOKEN}@${CI_SERVER_HOST}/Dane/cande-engine-source.git" "CANDE Source"
+
 # Build Linux wheels directly in manylinux containers
 .build_linux_wheel:
   stage: build
   tags:
     - docker
   image: quay.io/pypa/manylinux_2_28_x86_64
+  before_script: *fetch_engine_source
   script:
     - yum install -y gcc-gfortran
     - PYTHON="/opt/python/${PYTHON_TAG}/bin/python"
@@ -77,6 +86,9 @@ build_windows:
   parallel:
     matrix:
       - PYTHON_VERSION: ["3.10", "3.11", "3.12", "3.13"]
+  before_script:
+    - 'if (Test-Path "CANDE Source") { Remove-Item -Recurse -Force "CANDE Source" }'
+    - 'git clone --depth 1 "https://gitlab-ci-token:${CI_JOB_TOKEN}@$env:CI_SERVER_HOST/Dane/cande-engine-source.git" "CANDE Source"'
   script:
     # Locate Python by install path (e.g. C:\Python310\python.exe)
     - $PY_SHORT = "$PYTHON_VERSION" -replace '\.', ''
@@ -89,12 +101,15 @@ build_windows:
     paths:
       - dist/*.whl
 
-# Build source distribution (needs gfortran for meson setup)
+# Build source distribution (needs gfortran for meson setup; the engine
+# clone is build-scaffolding only — meson-python's git-archive semantics
+# keep untracked "CANDE Source/" OUT of the packed sdist)
 build_sdist:
   stage: build
   tags:
     - docker
   image: quay.io/pypa/manylinux_2_28_x86_64
+  before_script: *fetch_engine_source
   script:
     - yum install -y gcc-gfortran
     - /opt/python/cp310-cp310/bin/python -m pip install build meson-python meson ninja numpy
