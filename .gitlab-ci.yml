@@ -38,7 +38,7 @@ evidence:publish:
   stage: build
   tags:
     - docker
-  image: quay.io/pypa/manylinux2014_x86_64
+  image: quay.io/pypa/manylinux_2_28_x86_64
   script:
     - yum install -y gcc-gfortran
     - PYTHON="/opt/python/${PYTHON_TAG}/bin/python"
@@ -94,7 +94,7 @@ build_sdist:
   stage: build
   tags:
     - docker
-  image: quay.io/pypa/manylinux2014_x86_64
+  image: quay.io/pypa/manylinux_2_28_x86_64
   script:
     - yum install -y gcc-gfortran
     - /opt/python/cp310-cp310/bin/python -m pip install build meson-python meson ninja numpy
